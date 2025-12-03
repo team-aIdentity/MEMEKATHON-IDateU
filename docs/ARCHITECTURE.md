@@ -85,27 +85,31 @@ DID 기반 Social-Fi 데이팅 앱의 전체 시스템 아키텍처를 설명합
 - ✅ 실제 지갑/토큰 정보와 연결 X
 - ✅ 사용자는 온체인 서명 필요 X
 
-### 2. 온체인 매칭 기록 (Social-Fi 데이터)
+### 2. DID 기반 실유저 인증 (온체인)
 
 #### 프로세스
-1. 매칭이 성사되면
-2. 백엔드 서버가 `MatchRecord` 컨트랙트에 `matchEvent` 기록
+1. KYC 완료 후 VC 데이터에서 3가지만 추출:
+   - 성별
+   - 만 19세 인증
+   - 거주 국가
+2. 백엔드 서버가 `DIDRegistry` 컨트랙트에 Commit 값 저장
 3. 기록 내용:
    ```typescript
    {
-     userA_commit: string;
-     userB_commit: string;
-     timestamp: number;
+     userCommit: string;      // 해시값
+     isAdult19: boolean;       // 만 19세 여부
+     genderFlag: number;       // 성별 플래그
+     countryCommit: string;    // 국가 Commit 값
    }
    ```
 
 #### 특징
-- ✅ 유저의 실제 지갑/토큰 정보와 연결 X
+- ✅ 개인정보 전체 저장 ❌ (해시로 변환하여 저장)
+- ✅ 가짜 계정, 봇, 스캠, 나이 속임을 기술적으로 차단
 - ✅ 사용자는 온체인 서명 필요 X
-- ✅ 목적:
-  - 앱 신뢰도 강화
-  - 여성 사용자 보호
-  - "신중한 데이팅" 컨셉 강화
+- ✅ 목적: "실존 기반(Verified) 데이팅" 가치 제공
+
+**참고**: 매칭 기록은 온체인에 저장하지 않음 (백엔드 DB에만 저장)
 
 ### 3. 유료 아이템 BM (Business Model)
 
@@ -163,7 +167,7 @@ DID 기반 Social-Fi 데이팅 앱의 전체 시스템 아키텍처를 설명합
 
 ### 매칭 흐름
 ```
-좋아요 → 매칭 성사 → Backend 처리 → MatchRecord 컨트랙트에 기록 → 온체인 저장
+좋아요 → 매칭 성사 → Backend 처리 → DB에 저장 (온체인 저장 안 함)
 ```
 
 ### 결제 흐름

@@ -369,24 +369,28 @@ API는 JWT 기반 인증을 사용합니다:
 
 ### 3. 스마트 컨트랙트 (온체인)
 
-**목적**: 매칭 기록 및 아이템 결제를 온체인에 저장
+**목적**: DID 기반 실유저 인증 및 아이템 결제를 온체인에 저장
 
-#### 3.1 MatchRecord 컨트랙트
+**참고**: 매칭 기록은 온체인에 저장하지 않음 (백엔드 DB에만 저장)
 
-**목적**: 매칭 성사 시 온체인에 기록
+#### 3.1 DIDRegistry 컨트랙트
+
+**목적**: DID 기반 실유저 인증 정보를 온체인에 저장
+
+**저장되는 값**:
+- `userCommit` (hash) - 사용자 고유 Commit 값
+- `isAdult19` - 만 19세 인증 여부
+- `genderFlag` - 성별 플래그
+- `countryCommit` - 거주 국가 Commit 값
 
 **주요 함수**:
-
-- `recordMatch(bytes32 userACommit, bytes32 userBCommit)` - 매칭 기록
-- `getMatchRecord(bytes32 userACommit, bytes32 userBCommit)` - 매칭 기록 조회
-
-**이벤트**:
-
-- `MatchRecorded(bytes32 indexed userACommit, bytes32 indexed userBCommit, uint256 timestamp)`
+- `registerDID(bytes32 userCommit, bool isAdult19, uint8 genderFlag, bytes32 countryCommit)` - DID 등록
 
 **구현 상태**: 🚧 개발 예정
 
 **호출 방식**: 백엔드에서 자동 호출 (사용자 서명 불필요)
+
+**참고**: 매칭 기록은 온체인에 저장하지 않음 (백엔드 DB에만 저장)
 
 ---
 
@@ -422,14 +426,14 @@ API는 JWT 기반 인증을 사용합니다:
 4. MemeX API 토큰 발급 (선택사항)
 ```
 
-### 매칭 흐름
+### 매칭 흐름 (온체인 저장 안 함)
 
 ```
 1. 사용자 좋아요 (POST /api/matching/like)
    ↓
 2. 매칭 성사 시
    ↓
-3. 백엔드가 MatchRecord 컨트랙트에 기록 (자동)
+3. 백엔드 DB에 매칭 기록 저장 (온체인 저장 안 함)
    ↓
 4. 매칭 정보 반환 (GET /api/matching/{matchId})
 ```

@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { ChevronLeft, Lock as LockIcon, Star as LucideStarIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useWallet } from "@/lib/hooks";
@@ -484,10 +485,10 @@ export default function ItemStore({
                 className="absolute border border-[#e9ecef] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)]"
               />
               <div
-                className="bg-[#00bcd4] content-stretch flex flex-col items-center justify-center relative rounded-[40px] shrink-0 size-[72px]"
+                className="bg-[#eaf6ff] content-stretch flex flex-col items-center justify-center relative rounded-[40px] shrink-0 size-[72px]"
                 data-name="Item Icon"
               >
-                <StarIcon />
+                <img src={imgItem1} alt="Super Like" className="w-full h-full object-contain p-2" />
               </div>
               <div
                 className="box-border content-stretch flex flex-col gap-[8px] items-center px-0 py-[5px] relative shrink-0 w-full"
@@ -525,10 +526,10 @@ export default function ItemStore({
                 className="absolute border border-[#e9ecef] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)]"
               />
               <div
-                className="bg-[#ff9800] box-border content-stretch flex flex-col items-center justify-center px-0 py-[5px] relative rounded-[40px] shrink-0 size-[72px]"
+                className="bg-[#fff3e0] box-border content-stretch flex flex-col items-center justify-center px-0 py-[5px] relative rounded-[40px] shrink-0 size-[72px] overflow-visible"
                 data-name="Item Icon 2"
               >
-                <RotateCcwIcon />
+                <img src={imgItem2} alt="Rewind" className="w-[150%] h-[150%] object-contain" />
               </div>
               <div
                 className="box-border content-stretch flex flex-col gap-[8px] items-center px-0 py-[5px] relative shrink-0 w-full"
@@ -734,13 +735,11 @@ export default function ItemStore({
                 setShowPaymentModal(false);
                 setSelectedItem(null);
               }}
-              className="absolute bg-white h-[54px] left-1/2 rounded-[10px] shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08),0px_2px_3px_0px_rgba(0,0,0,0.17)] top-[241px] translate-x-[-50%] w-[286px] hover:bg-gray-50 transition-colors"
+              className="absolute bg-white h-[54px] left-1/2 rounded-[10px] shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08),0px_2px_3px_0px_rgba(0,0,0,0.17)] top-[241px] translate-x-[-50%] w-[286px] hover:bg-gray-50 transition-colors flex items-center justify-center"
             >
-              <div className="absolute bg-white box-border content-stretch flex gap-[15px] items-start left-1/2 p-[15px] rounded-[10px] top-1/2 translate-x-[-50%] translate-y-[-50%]">
-                <p className="font-['Roboto:Medium',sans-serif] font-medium leading-[normal] relative shrink-0 text-[20px] text-[rgba(0,0,0,0.54)] text-nowrap whitespace-pre">
-                  취소하기
-                </p>
-              </div>
+              <p className="font-['Roboto:Medium',sans-serif] font-medium leading-[normal] text-[20px] text-[rgba(0,0,0,0.54)] text-nowrap whitespace-pre">
+                취소하기
+              </p>
             </button>
           </div>
         </div>

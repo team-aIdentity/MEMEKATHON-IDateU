@@ -1,0 +1,4398 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/depositBalanceOf": {
+            "get": {
+                "tags": [
+                    "MemeX Staking (Public View)"
+                ],
+                "summary": "Get total deposited balance (view)",
+                "description": "ABI spec for the `depositBalanceOf` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "account",
+                        "in": "query",
+                        "required": true,
+                        "description": "Input parameter: `address`",
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...UserAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Total deposited balance as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "100000000000000000000"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getLockedInfos": {
+            "get": {
+                "tags": [
+                    "MemeX Staking (Public View)"
+                ],
+                "summary": "Get list of locked deposits (view)",
+                "description": "ABI spec for the `getLockedInfos` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "owner",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...UserAddress"
+                        }
+                    },
+                    {
+                        "name": "length",
+                        "in": "query",
+                        "required": true,
+                        "description": "The number of items to fetch (use `getLockedInfosLength` first).",
+                        "schema": {
+                            "type": "string",
+                            "example": "5"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of LockedInfo structures.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/LockedInfo"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getLockedInfosLength": {
+            "get": {
+                "tags": [
+                    "MemeX Staking (Public View)"
+                ],
+                "summary": "Get count of locked deposits (view)",
+                "description": "ABI spec for the `getLockedInfosLength` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "owner",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...UserAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The number of locked info items as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "5"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/unlockBalanceOf": {
+            "get": {
+                "tags": [
+                    "MemeX Staking (Public View)"
+                ],
+                "summary": "Get balance available for withdrawal (view)",
+                "description": "ABI spec for the `unlockBalanceOf` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "account",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...UserAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unlocked (withdrawable) balance as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "5000000000000000000"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/deposit": {
+            "post": {
+                "tags": [
+                    "MemeX Staking (Public Write)"
+                ],
+                "summary": "Deposit and lock funds (payable)",
+                "description": "ABI spec for the `deposit` function. This is a non-functional spec, not a callable API endpoint. (This function is payable, 'msg.value' must be sent.)",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DepositRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/withdraw": {
+            "post": {
+                "tags": [
+                    "MemeX Staking (Public Write)"
+                ],
+                "summary": "Withdraw unlocked funds (nonpayable)",
+                "description": "ABI spec for the `withdraw` function. This is a non-functional spec, not a callable API endpoint.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WithdrawRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/getPrice": {
+            "get": {
+                "tags": [
+                    "MemeX DEX Connector (Public View)"
+                ],
+                "summary": "Get token price (view)",
+                "description": "ABI spec for the `getPrice` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...TokenAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Price as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "1000000000000000000"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/connectFee": {
+            "get": {
+                "tags": [
+                    "MemeX DEX Connector (Public View)"
+                ],
+                "summary": "Get connection fee (view)",
+                "description": "ABI spec for the `connectFee` function. This is a non-functional spec, not a callable API endpoint.",
+                "responses": {
+                    "200": {
+                        "description": "Fee as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "100000000000000"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/swapMin": {
+            "get": {
+                "tags": [
+                    "MemeX DEX Connector (Public View)"
+                ],
+                "summary": "Get minimum swap amount (view)",
+                "description": "ABI spec for the `swapMin` function. This is a non-functional spec, not a callable API endpoint.",
+                "responses": {
+                    "200": {
+                        "description": "Minimum amount as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "5000000000000000"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/swapSingleBuy": {
+            "post": {
+                "tags": [
+                    "MemeX DEX Connector (Public Write)"
+                ],
+                "summary": "Swap ETH for Tokens (payable)",
+                "description": "ABI spec for the `swapSingleBuy` function. This is a non-functional spec, not a callable API endpoint. (This function is payable, 'msg.value' must be sent.)",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SwapSingleBuyRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/swapSingleSell": {
+            "post": {
+                "tags": [
+                    "MemeX DEX Connector (Public Write)"
+                ],
+                "summary": "Swap Tokens for ETH (payable)",
+                "description": "ABI spec for the `swapSingleSell` function. This is a non-functional spec, not a callable API endpoint. (This function is payable, 'msg.value' must be sent for fees.)",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SwapSingleSellRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/estimateBuyAmountOut": {
+            "get": {
+                "tags": [
+                    "MemeX Sale (Public View)"
+                ],
+                "summary": "Estimate buy output amount (view)",
+                "description": "ABI spec for the `estimateBuyAmountOut` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...TokenAddress"
+                        }
+                    },
+                    {
+                        "name": "amountIn",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1000000000000000000"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estimated amountOut as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "123456789"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/estimateSellAmountOut": {
+            "get": {
+                "tags": [
+                    "MemeX Sale (Public View)"
+                ],
+                "summary": "Estimate sell output amount (view)",
+                "description": "ABI spec for the `estimateSellAmountOut` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...TokenAddress"
+                        }
+                    },
+                    {
+                        "name": "amountIn",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1000000000000000000"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estimated amountOut as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "123456789"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getDonatedAmount": {
+            "get": {
+                "tags": [
+                    "MemeX Sale (Public View)"
+                ],
+                "summary": "Get donated amount by user (view)",
+                "description": "ABI spec for the `getDonatedAmount` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...TokenAddress"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...UserAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Donated amount as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "0"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getSaleTokenInfo": {
+            "get": {
+                "tags": [
+                    "MemeX Sale (Public View)"
+                ],
+                "summary": "Get detailed sale info (view)",
+                "description": "ABI spec for the `getSaleTokenInfo` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...TokenAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sale token info (tuple) and pers array.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetSaleTokenInfoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getSaleTokenPrice": {
+            "get": {
+                "tags": [
+                    "MemeX Sale (Public View)"
+                ],
+                "summary": "Get current sale price (view)",
+                "description": "ABI spec for the `getSaleTokenPrice` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...TokenAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current price as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "10000000000"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getTotalDonationAmount": {
+            "get": {
+                "tags": [
+                    "MemeX Sale (Public View)"
+                ],
+                "summary": "Get total donated amount for a token (view)",
+                "description": "ABI spec for the `getTotalDonationAmount` function. This is a non-functional spec, not a callable API endpoint.",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0x...TokenAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Total donated amount as uint256 string.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "0"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buyToken": {
+            "post": {
+                "tags": [
+                    "MemeX Sale (Public Write)"
+                ],
+                "summary": "Buy tokens (payable)",
+                "description": "ABI spec for the `buyToken` function. This is a non-functional spec, not a callable API endpoint. (This function is payable, 'msg.value' must be sent.)",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BuyTokenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/sellToken": {
+            "post": {
+                "tags": [
+                    "MemeX Sale (Public Write)"
+                ],
+                "summary": "Sell tokens (nonpayable)",
+                "description": "ABI spec for the `sellToken` function. This is a non-functional spec, not a callable API endpoint.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SellTokenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/donateDeposit": {
+            "post": {
+                "tags": [
+                    "MemeX Sale (Public Write)"
+                ],
+                "summary": "Donate ETH (payable)",
+                "description": "ABI spec for the `donateDeposit` function. This is a non-functional spec, not a callable API endpoint. (This function is payable, 'msg.value' must be sent.)",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DonateDepositRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/donateWithdraw": {
+            "post": {
+                "tags": [
+                    "MemeX Sale (Public Write)"
+                ],
+                "summary": "Withdraw donation (nonpayable)",
+                "description": "ABI spec for the `donateWithdraw` function. This is a non-functional spec, not a callable API endpoint.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DonateWithdrawRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction Sent (Mock)"
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "operationId": "health",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "/health"
+                ]
+            }
+        },
+        "/health/readiness": {
+            "get": {
+                "operationId": "readiness",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "/health"
+                ]
+            }
+        },
+        "/public/v1/user": {
+            "get": {
+                "operationId": "getMyInfo",
+                "summary": "current users basic info",
+                "description": "get user basic info by users access token",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MyUserInfoOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorization": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "editMyInfo",
+                "summary": "edit userInfo",
+                "description": "edit user data give me request type formData",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OmitTypeClass"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditUserInfoOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorization": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}": {
+            "get": {
+                "operationId": "getUserInfo",
+                "summary": "user basic info",
+                "description": "get users basic info by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorization": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/posts": {
+            "get": {
+                "operationId": "getUserPageFeed",
+                "summary": "user posts",
+                "description": "get users posts by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "rePostCursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetSpecificUsersPostsOutputV2"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/toggle-follow": {
+            "patch": {
+                "operationId": "toggleFollow",
+                "summary": "follow || unFollow",
+                "description": "change state of users follow",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChangeUserRelationOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/followers": {
+            "get": {
+                "operationId": "getFollowers",
+                "summary": "user follower",
+                "description": "get users follower by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetUsersFollowOutput"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/following": {
+            "get": {
+                "operationId": "getFollowing",
+                "summary": "user following",
+                "description": "get users following by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetUsersFollowOutput"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/replies": {
+            "get": {
+                "operationId": "getReplies",
+                "summary": "user reply",
+                "description": "get users  reply by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUsersReplyWithParentOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/like-posts": {
+            "get": {
+                "operationId": "getLikePosts",
+                "summary": "user liked post",
+                "description": "get users  liked post by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUsersLikedPostOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/trade-history": {
+            "get": {
+                "operationId": "getTradeHistory",
+                "summary": "user trade history",
+                "description": "get users  trade history by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetUsersTrades"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/holders/{count}": {
+            "get": {
+                "operationId": "getHolders",
+                "summary": "user holders",
+                "description": "get users  holders by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUsersTokenHoldersOutputV2"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/hold-tokens": {
+            "get": {
+                "operationId": "getHoldTokens",
+                "summary": "user hold tokens",
+                "description": "get users  hold tokens by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sortOrder",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/UserHoldSortOrder"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/UserHoldSortBy"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetUserHoldOutput"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ]
+            }
+        },
+        "/public/v1/user/{username}/{usernametag}/sponsors": {
+            "get": {
+                "operationId": "getSponsors",
+                "summary": "user sponsors",
+                "description": "get users sponsors by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetUserSponsorOutput"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/user"
+                ]
+            }
+        },
+        "/public/v1/point": {
+            "get": {
+                "operationId": "getMyPoint",
+                "summary": "my point",
+                "description": "get my point",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUsersPointResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/point"
+                ],
+                "security": [
+                    {
+                        "authorization": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/point/history/{username}/{usernametag}": {
+            "get": {
+                "operationId": "getPointHistory",
+                "summary": "point history",
+                "description": "get point history by username, usernametag",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usernametag",
+                        "required": false,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "take",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "types",
+                        "required": false,
+                        "in": "query",
+                        "description": "[xPoint,mPoint]",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PointHistoryPagingDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/point"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/post/latest": {
+            "get": {
+                "operationId": "getLatestPosts",
+                "summary": "latest posts",
+                "description": "get latest posts",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetHomeFeedOutputV3"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/post"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/post/feed": {
+            "get": {
+                "operationId": "getFeed",
+                "summary": "feed posts",
+                "description": "get feed posts",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "enum": [],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetHomeFeedOutputV3"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/post"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/post/follow": {
+            "get": {
+                "operationId": "getFollowingUsersFeed",
+                "summary": "following posts",
+                "description": "get following posts",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetFollowingUsersFeedOutputV3"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/post"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/post/{contentId}": {
+            "get": {
+                "operationId": "getSpecificPost",
+                "summary": "specific post",
+                "description": "get specific post",
+                "parameters": [
+                    {
+                        "name": "contentId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "withOutThreads",
+                        "required": false,
+                        "in": "query",
+                        "description": "default is false, if true, the threads will not be returned",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "replyLimit",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "replyCursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetSpecificPostOutputV3"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/post"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "deleteByContentId",
+                "summary": "delete post",
+                "description": "delete post by content id",
+                "parameters": [
+                    {
+                        "name": "contentId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete content result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/post"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/post/{contentId}/pin": {
+            "patch": {
+                "operationId": "setPin",
+                "summary": "pin post",
+                "description": "pin post by content id",
+                "parameters": [
+                    {
+                        "name": "contentId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetPinOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/post"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/post/{contentId}/like": {
+            "patch": {
+                "operationId": "setLike",
+                "summary": "like post",
+                "description": "like post by content id",
+                "parameters": [
+                    {
+                        "name": "contentId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetLikeOutPut"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/post"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/search/post": {
+            "get": {
+                "operationId": "getSearchPosts",
+                "summary": "search posts",
+                "description": "search posts by search term",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "required": true,
+                        "in": "query",
+                        "description": "Search term for posts",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "take",
+                        "required": true,
+                        "in": "query",
+                        "description": "Number of posts to return",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetHomePostsOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/search"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/search/hashTag": {
+            "get": {
+                "operationId": "searchHashTagAndUser",
+                "summary": "search hash tags",
+                "description": "search hash tags",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "required": true,
+                        "in": "query",
+                        "description": "Search term for posts including hash tags",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SearchHashTagAndUserOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/search"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/search/user": {
+            "get": {
+                "operationId": "getMentionAutocompleteSuggestions",
+                "summary": "search users",
+                "description": "search users by keyword",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetAutocompleteMentionOutput"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/search"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/price/latest/{chainId}/{tokenAddress}": {
+            "get": {
+                "operationId": "getLatestPriceByAddress",
+                "summary": "latest price",
+                "description": "get latest price by chain id and token address",
+                "parameters": [
+                    {
+                        "name": "chainId",
+                        "required": true,
+                        "in": "path",
+                        "description": "Chain ID of the token",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "tokenAddress",
+                        "required": true,
+                        "in": "path",
+                        "description": "Token address",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetChainTokenLatestPriceResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/price"
+                ],
+                "security": [
+                    {
+                        "authorizations": []
+                    }
+                ]
+            }
+        },
+        "/public/v1/price/chart/{chainId}/{tokenAddress}/{interval}/{startTime}/{endTime}": {
+            "get": {
+                "operationId": "getPriceByAddressAndStartTimeEndTime",
+                "summary": "price chart",
+                "description": "get price chart by chain id and token address",
+                "parameters": [
+                    {
+                        "name": "chainId",
+                        "required": true,
+                        "in": "path",
+                        "description": "Chain ID of the token",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "tokenAddress",
+                        "required": true,
+                        "in": "path",
+                        "description": "Token address",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "interval",
+                        "required": true,
+                        "in": "path",
+                        "description": "Time interval",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "startTime",
+                        "required": true,
+                        "in": "path",
+                        "description": "Start time for the price data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "endTime",
+                        "required": true,
+                        "in": "path",
+                        "description": "End time for the price data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetChainTokenPricesResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/price"
+                ]
+            }
+        },
+        "/public/v1/memekathon/mock-user-data": {
+            "get": {
+                "operationId": "getMockUserData",
+                "summary": "Get mock 3000 user data list",
+                "description": "Get mock 3000 user data list",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MockUserData"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "public/v1/memekathon"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "MemeX-Public-API",
+        "description": "",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [
+        {
+            "name": "MemeX Sale (Public View)",
+            "description": "Public read-only functions (Use Query Params for inputs)."
+        },
+        {
+            "name": "MemeX Sale (Public Write)",
+            "description": "Public state-changing functions (Use Request Body for inputs)."
+        },
+        {
+            "name": "MemeX DEX Connector (Public View)",
+            "description": "Public read-only functions (Use Query Params for inputs)."
+        },
+        {
+            "name": "MemeX DEX Connector (Public Write)",
+            "description": "Public state-changing functions (Use Request Body for inputs)."
+        },
+        {
+            "name": "MemeX Staking (Public View)",
+            "description": "Public read-only functions (Use Query Params for inputs)."
+        },
+        {
+            "name": "MemeX Staking (Public Write)",
+            "description": "Public state-changing functions (Use Request Body for inputs)."
+        }
+    ],
+    "servers": [],
+    "components": {
+        "securitySchemes": {
+            "authorization": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "type": "http",
+                "name": "JWT",
+                "in": "header"
+            },
+            "refresh": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "type": "http",
+                "name": "JWT",
+                "in": "header"
+            },
+            "apiKey": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-api-key"
+            }
+        },
+        "schemas": {
+            "MyUserInfoOutput": {
+                "type": "object",
+                "properties": {
+                    "userType": {
+                        "type": "string",
+                        "enum": [
+                            "OFFICIAL",
+                            "GENERAL",
+                            "INFLUENCER",
+                            "REPORTER",
+                            "REPORTMANAGER",
+                            "X_USER",
+                            "X_LOCK_USER"
+                        ]
+                    },
+                    "bannerImageUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "profileImageUrl": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "tokenAddress": {
+                        "type": "string"
+                    },
+                    "tokenSymbol": {
+                        "type": "string"
+                    },
+                    "tokenImageUrl": {
+                        "type": "string"
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "userName": {
+                        "type": "string"
+                    },
+                    "userNameTag": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bio": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "totalDonationAmount": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "website": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bondingCurve": {
+                        "type": "object",
+                        "properties": {
+                            "bodingCurveTotal": {
+                                "type": "number"
+                            },
+                            "bondingCurveGoal": {
+                                "type": "number"
+                            },
+                            "bondingCurveProgress": {
+                                "type": "number"
+                            },
+                            "currentPrice": {
+                                "type": "number"
+                            },
+                            "tokenImageUrl": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "minted": {
+                        "type": "string"
+                    },
+                    "following": {
+                        "type": "number"
+                    },
+                    "followers": {
+                        "type": "number"
+                    },
+                    "hold": {
+                        "type": "number"
+                    },
+                    "sponsor": {
+                        "type": "number"
+                    },
+                    "refCode": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isFollow": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "isPreOrdered": {
+                        "type": "boolean"
+                    },
+                    "isConnectTelegram": {
+                        "type": "boolean"
+                    },
+                    "metaData": {
+                        "type": "string"
+                    },
+                    "walletAddress": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "userType",
+                    "bannerImageUrl",
+                    "profileImageUrl",
+                    "displayName",
+                    "tokenAddress",
+                    "tokenSymbol",
+                    "tokenImageUrl",
+                    "tokenCexListed",
+                    "userName",
+                    "userNameTag",
+                    "bio",
+                    "totalDonationAmount",
+                    "location",
+                    "website",
+                    "bondingCurve",
+                    "minted",
+                    "following",
+                    "followers",
+                    "hold",
+                    "sponsor",
+                    "refCode",
+                    "isFollow",
+                    "isPreOrdered",
+                    "walletAddress"
+                ]
+            },
+            "OmitTypeClass": {
+                "type": "object",
+                "properties": {
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "website": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EditUserInfoOutput": {
+                "type": "object",
+                "properties": {
+                    "isSuccess": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "isSuccess"
+                ]
+            },
+            "GetPostsOutput": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "profileImageUrl": {
+                                "type": "string"
+                            },
+                            "userName": {
+                                "type": "string"
+                            },
+                            "userNameTag": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "userType": {
+                                "enum": [
+                                    "GENERAL",
+                                    "INFLUENCER",
+                                    "OFFICIAL",
+                                    "REPORTER",
+                                    "REPORTMANAGER"
+                                ]
+                            },
+                            "isPreOrdered": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "bondingCurveProgress": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "priceFluctuationRange": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "prevId": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "parentId": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "nextId": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "body": {
+                        "nullable": true,
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "hashTags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "mentions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "number"
+                                },
+                                "userName": {
+                                    "type": "string"
+                                },
+                                "userNameTag": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "imageSrc": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "isBlocked": {
+                        "type": "boolean"
+                    },
+                    "replyCount": {
+                        "type": "number"
+                    },
+                    "viewCount": {
+                        "type": "number"
+                    },
+                    "likeCount": {
+                        "type": "number"
+                    },
+                    "liked": {
+                        "type": "boolean"
+                    },
+                    "isFollow": {
+                        "type": "boolean"
+                    },
+                    "isPined": {
+                        "type": "boolean"
+                    },
+                    "rePosted": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "rePoster": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "me": {
+                                "type": "boolean"
+                            }
+                        },
+                        "nullable": true
+                    },
+                    "repostCount": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "user",
+                    "tokenCexListed",
+                    "bondingCurveProgress",
+                    "priceFluctuationRange",
+                    "id",
+                    "prevId",
+                    "parentId",
+                    "nextId",
+                    "contentType",
+                    "value",
+                    "hashTags",
+                    "mentions",
+                    "imageSrc",
+                    "createdAt",
+                    "updatedAt",
+                    "isBlocked",
+                    "replyCount",
+                    "viewCount",
+                    "likeCount",
+                    "liked",
+                    "isFollow",
+                    "isPined",
+                    "rePosted",
+                    "rePoster",
+                    "repostCount"
+                ]
+            },
+            "ThreadInfo": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "$ref": "#/components/schemas/GetPostsOutput"
+                    },
+                    "displayIndex": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "content",
+                    "displayIndex"
+                ]
+            },
+            "GetPostOutputV2": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "profileImageUrl": {
+                                "type": "string"
+                            },
+                            "userName": {
+                                "type": "string"
+                            },
+                            "userNameTag": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "userType": {
+                                "enum": [
+                                    "GENERAL",
+                                    "INFLUENCER",
+                                    "OFFICIAL",
+                                    "REPORTER",
+                                    "REPORTMANAGER"
+                                ]
+                            },
+                            "isPreOrdered": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "bondingCurveProgress": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "priceFluctuationRange": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "prevId": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "parentId": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "nextId": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "body": {
+                        "nullable": true,
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "hashTags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "mentions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "number"
+                                },
+                                "userName": {
+                                    "type": "string"
+                                },
+                                "userNameTag": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "imageSrc": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "isBlocked": {
+                        "type": "boolean"
+                    },
+                    "replyCount": {
+                        "type": "number"
+                    },
+                    "viewCount": {
+                        "type": "number"
+                    },
+                    "likeCount": {
+                        "type": "number"
+                    },
+                    "liked": {
+                        "type": "boolean"
+                    },
+                    "isFollow": {
+                        "type": "boolean"
+                    },
+                    "isPined": {
+                        "type": "boolean"
+                    },
+                    "rePosted": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "rePoster": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "me": {
+                                "type": "boolean"
+                            }
+                        },
+                        "nullable": true
+                    },
+                    "repostCount": {
+                        "type": "number"
+                    },
+                    "threads": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ThreadInfo"
+                        }
+                    },
+                    "totalThreadCount": {
+                        "type": "number",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "user",
+                    "tokenCexListed",
+                    "bondingCurveProgress",
+                    "priceFluctuationRange",
+                    "id",
+                    "prevId",
+                    "parentId",
+                    "nextId",
+                    "contentType",
+                    "value",
+                    "hashTags",
+                    "mentions",
+                    "imageSrc",
+                    "createdAt",
+                    "updatedAt",
+                    "isBlocked",
+                    "replyCount",
+                    "viewCount",
+                    "likeCount",
+                    "liked",
+                    "isFollow",
+                    "isPined",
+                    "rePosted",
+                    "rePoster",
+                    "repostCount",
+                    "threads",
+                    "totalThreadCount"
+                ]
+            },
+            "GetSpecificUsersPostsOutputV2": {
+                "type": "object",
+                "properties": {
+                    "nextCursor": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "rePostCursor": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "hasPin": {
+                        "type": "boolean"
+                    },
+                    "contents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetPostOutputV2"
+                        }
+                    }
+                },
+                "required": [
+                    "nextCursor",
+                    "rePostCursor",
+                    "hasPin",
+                    "contents"
+                ]
+            },
+            "ChangeUserRelationOutput": {
+                "type": "object",
+                "properties": {
+                    "isSuccess": {
+                        "type": "boolean"
+                    },
+                    "action": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "isSuccess",
+                    "action"
+                ]
+            },
+            "GetUsersFollowOutput": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "profileImageUrl": {
+                                "type": "string"
+                            },
+                            "userName": {
+                                "type": "string"
+                            },
+                            "userNameTag": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "userType": {
+                                "enum": [
+                                    "GENERAL",
+                                    "INFLUENCER",
+                                    "OFFICIAL",
+                                    "REPORTER",
+                                    "REPORTMANAGER"
+                                ]
+                            },
+                            "isPreOrdered": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "bondingCurveProgress": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "priceFluctuationRange": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "isFollow": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "user",
+                    "tokenCexListed",
+                    "bondingCurveProgress",
+                    "priceFluctuationRange",
+                    "isFollow"
+                ]
+            },
+            "ReplyWithParent": {
+                "type": "object",
+                "properties": {
+                    "parent": {
+                        "$ref": "#/components/schemas/GetPostsOutput"
+                    },
+                    "replies": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetPostsOutput"
+                        }
+                    },
+                    "latestReplyAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "parent",
+                    "replies",
+                    "latestReplyAt"
+                ]
+            },
+            "GetUsersReplyWithParentOutput": {
+                "type": "object",
+                "properties": {
+                    "contents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReplyWithParent"
+                        }
+                    },
+                    "nextCursor": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "contents",
+                    "nextCursor"
+                ]
+            },
+            "GetUsersLikedPostOutput": {
+                "type": "object",
+                "properties": {
+                    "contents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetPostsOutput"
+                        }
+                    },
+                    "nextCursor": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "contents",
+                    "nextCursor"
+                ]
+            },
+            "GetUsersTrades": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "profileImageUrl": {
+                                "type": "string"
+                            },
+                            "userName": {
+                                "type": "string"
+                            },
+                            "userNameTag": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "userType": {
+                                "enum": [
+                                    "GENERAL",
+                                    "INFLUENCER",
+                                    "OFFICIAL",
+                                    "REPORTER",
+                                    "REPORTMANAGER"
+                                ]
+                            },
+                            "isPreOrdered": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "amountIn": {
+                        "type": "string"
+                    },
+                    "amountOut": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "string"
+                    },
+                    "txHash": {
+                        "type": "string"
+                    },
+                    "tradeType": {
+                        "type": "string"
+                    },
+                    "tradeDate": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "user",
+                    "amountIn",
+                    "amountOut",
+                    "price",
+                    "txHash",
+                    "tradeType",
+                    "tradeDate"
+                ]
+            },
+            "GetUsersTokenHoldersOutput": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "profileImage": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "percentage": {
+                        "type": "number"
+                    },
+                    "nativeCurrency": {
+                        "type": "number"
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "userName": {
+                        "type": "string"
+                    },
+                    "userNameTag": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "profileImage",
+                    "displayName",
+                    "address",
+                    "percentage",
+                    "nativeCurrency",
+                    "tokenCexListed",
+                    "userName",
+                    "userNameTag"
+                ]
+            },
+            "GetUsersTokenHoldersOutputV2": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number"
+                    },
+                    "holders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetUsersTokenHoldersOutput"
+                        }
+                    }
+                },
+                "required": [
+                    "count",
+                    "holders"
+                ]
+            },
+            "UserHoldSortOrder": {
+                "type": "string",
+                "enum": [
+                    "asc",
+                    "desc"
+                ]
+            },
+            "UserHoldSortBy": {
+                "type": "string",
+                "enum": [
+                    "balance",
+                    "currentPrice",
+                    "currentUsdPrice",
+                    "totalValue",
+                    "totalUsdValue"
+                ]
+            },
+            "GetUserHoldOutput": {
+                "type": "object",
+                "properties": {
+                    "ownerId": {
+                        "type": "number"
+                    },
+                    "tokenAddress": {
+                        "type": "string"
+                    },
+                    "tokenSymbol": {
+                        "type": "string"
+                    },
+                    "tokenName": {
+                        "type": "string"
+                    },
+                    "tokenImageUrl": {
+                        "type": "string"
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "userName": {
+                        "type": "string"
+                    },
+                    "userNameTag": {
+                        "type": "string"
+                    },
+                    "userDisplayName": {
+                        "type": "string"
+                    },
+                    "userWalletAddress": {
+                        "type": "string"
+                    },
+                    "profileImageUrl": {
+                        "type": "string"
+                    },
+                    "priceFluctuationRange": {
+                        "type": "number"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "currentPrice": {
+                        "type": "string"
+                    },
+                    "totalValue": {
+                        "type": "string"
+                    },
+                    "currentUsdPrice": {
+                        "type": "string"
+                    },
+                    "totalUsdValue": {
+                        "type": "string"
+                    },
+                    "bondingCurvePercentage": {
+                        "type": "string"
+                    },
+                    "isSaleCompleted": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "ownerId",
+                    "tokenAddress",
+                    "tokenSymbol",
+                    "tokenName",
+                    "tokenImageUrl",
+                    "tokenCexListed",
+                    "userName",
+                    "userNameTag",
+                    "userDisplayName",
+                    "userWalletAddress",
+                    "profileImageUrl",
+                    "priceFluctuationRange",
+                    "balance",
+                    "currentPrice",
+                    "totalValue",
+                    "currentUsdPrice",
+                    "totalUsdValue",
+                    "bondingCurvePercentage",
+                    "isSaleCompleted"
+                ]
+            },
+            "GetUserSponsorOutput": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "number"
+                    },
+                    "profileImage": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "userName": {
+                        "type": "string"
+                    },
+                    "userNameTag": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "userType": {
+                        "type": "string",
+                        "enum": [
+                            "OFFICIAL",
+                            "GENERAL",
+                            "INFLUENCER",
+                            "REPORTER",
+                            "REPORTMANAGER",
+                            "X_USER",
+                            "X_LOCK_USER"
+                        ]
+                    },
+                    "isPreOrdered": {
+                        "type": "boolean"
+                    },
+                    "totalAmount": {
+                        "type": "number"
+                    },
+                    "vip": {
+                        "type": "boolean"
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "userId",
+                    "profileImage",
+                    "displayName",
+                    "userName",
+                    "userNameTag",
+                    "userType",
+                    "isPreOrdered",
+                    "totalAmount",
+                    "vip",
+                    "tokenCexListed"
+                ]
+            },
+            "GetUsersPointResponseDto": {
+                "type": "object",
+                "properties": {
+                    "pointType": {
+                        "type": "string",
+                        "example": "xPoint"
+                    },
+                    "balance": {
+                        "type": "string",
+                        "format": "decimal",
+                        "example": "100.1"
+                    }
+                },
+                "required": [
+                    "pointType",
+                    "balance"
+                ]
+            },
+            "PointHistoryItemDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "xPoint",
+                            "mPoint"
+                        ]
+                    },
+                    "changeAmount": {
+                        "type": "string"
+                    },
+                    "actionType": {
+                        "type": "string",
+                        "enum": [
+                            "EARN",
+                            "STAKING_REWARD",
+                            "USE",
+                            "EXPIRE",
+                            "CANCEL",
+                            "REFUND",
+                            "TRANSFER",
+                            "LOCK",
+                            "UNLOCK",
+                            "BURN",
+                            "TRADING_LEADER_REWARD",
+                            "LOYAL_STAKER_BONUS"
+                        ]
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "changeAmount",
+                    "actionType",
+                    "createdAt"
+                ]
+            },
+            "PointHistoryGroupDto": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "xPoint",
+                            "mPoint"
+                        ]
+                    },
+                    "history": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PointHistoryItemDto"
+                        }
+                    }
+                },
+                "required": [
+                    "type",
+                    "history"
+                ]
+            },
+            "PointHistoryPagingDto": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PointHistoryGroupDto"
+                        }
+                    },
+                    "nextCursor": {
+                        "type": "number",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "data",
+                    "nextCursor"
+                ]
+            },
+            "MentionMetadata": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "number"
+                    },
+                    "userName": {
+                        "type": "string"
+                    },
+                    "userNameTag": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "userId",
+                    "userName",
+                    "userNameTag"
+                ]
+            },
+            "PostBody": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "text",
+                            "hashtag",
+                            "mention",
+                            "return"
+                        ]
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "metadata": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MentionMetadata"
+                            }
+                        ],
+                        "nullable": true,
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/MentionMetadata"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "type",
+                    "value",
+                    "metadata"
+                ]
+            },
+            "SocialMeta": {
+                "type": "object",
+                "properties": {
+                    "likeCount": {
+                        "type": "number"
+                    },
+                    "repostCount": {
+                        "type": "number"
+                    },
+                    "replyCount": {
+                        "type": "number"
+                    },
+                    "viewCount": {
+                        "type": "number"
+                    },
+                    "liked": {
+                        "type": "boolean"
+                    },
+                    "isFollow": {
+                        "type": "boolean"
+                    },
+                    "isRePosted": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "likeCount",
+                    "repostCount",
+                    "replyCount",
+                    "viewCount",
+                    "liked",
+                    "isFollow",
+                    "isRePosted"
+                ]
+            },
+            "PostMeta": {
+                "type": "object",
+                "properties": {
+                    "creator": {
+                        "type": "object",
+                        "properties": {
+                            "profileImageUrl": {
+                                "type": "string"
+                            },
+                            "userName": {
+                                "type": "string"
+                            },
+                            "userNameTag": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "userType": {
+                                "type": "string"
+                            },
+                            "isPreOrdered": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "prevId": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "parentId": {
+                        "type": "number",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "creator",
+                    "createdAt",
+                    "updatedAt",
+                    "prevId",
+                    "parentId"
+                ]
+            },
+            "ThreadPost": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PostBody"
+                        }
+                    },
+                    "imageSrc": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "contentType": {
+                        "type": "string",
+                        "enum": [
+                            "POST",
+                            "REPLY"
+                        ]
+                    },
+                    "threadIndex": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "id",
+                    "value",
+                    "body",
+                    "imageSrc",
+                    "contentType",
+                    "threadIndex"
+                ]
+            },
+            "Threads": {
+                "type": "object",
+                "properties": {
+                    "upperThread": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ThreadPost"
+                        }
+                    },
+                    "lowerThread": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ThreadPost"
+                        }
+                    }
+                },
+                "required": [
+                    "upperThread",
+                    "lowerThread"
+                ]
+            },
+            "FeedPost": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PostBody"
+                        }
+                    },
+                    "imageSrc": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "contentType": {
+                        "type": "string",
+                        "enum": [
+                            "POST",
+                            "REPLY"
+                        ]
+                    },
+                    "socialMeta": {
+                        "$ref": "#/components/schemas/SocialMeta"
+                    },
+                    "postMeta": {
+                        "$ref": "#/components/schemas/PostMeta"
+                    },
+                    "threads": {
+                        "nullable": true,
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Threads"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "value",
+                    "body",
+                    "imageSrc",
+                    "contentType",
+                    "socialMeta",
+                    "postMeta",
+                    "threads"
+                ]
+            },
+            "GetHomeFeedOutputV3": {
+                "type": "object",
+                "properties": {
+                    "contents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FeedPost"
+                        }
+                    },
+                    "nextCursor": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "AI",
+                            "DB"
+                        ]
+                    }
+                },
+                "required": [
+                    "contents",
+                    "nextCursor",
+                    "type"
+                ]
+            },
+            "GetFollowingUsersFeedOutputV3": {
+                "type": "object",
+                "properties": {
+                    "contents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FeedPost"
+                        }
+                    },
+                    "nextCursor": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "hasFollowing": {
+                        "type": "boolean",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "contents",
+                    "nextCursor",
+                    "hasFollowing"
+                ]
+            },
+            "GetSpecificPostOutputV3": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "$ref": "#/components/schemas/FeedPost"
+                    },
+                    "parent": {
+                        "nullable": true,
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/FeedPost"
+                            }
+                        ]
+                    },
+                    "replies": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FeedPost"
+                        }
+                    },
+                    "replyCursor": {
+                        "type": "number",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "content",
+                    "parent",
+                    "replies",
+                    "replyCursor"
+                ]
+            },
+            "SetPinOutput": {
+                "type": "object",
+                "properties": {
+                    "isSuccess": {
+                        "type": "boolean"
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "CREATED",
+                            "REMOVED",
+                            "UPDATED",
+                            "FAILED"
+                        ]
+                    }
+                },
+                "required": [
+                    "isSuccess",
+                    "state"
+                ]
+            },
+            "SetLikeOutPut": {
+                "type": "object",
+                "properties": {
+                    "isSuccess": {
+                        "type": "boolean"
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "CREATED",
+                            "REMOVED",
+                            "UPDATED",
+                            "FAILED"
+                        ]
+                    }
+                },
+                "required": [
+                    "isSuccess",
+                    "state"
+                ]
+            },
+            "GetHomePostsOutput": {
+                "type": "object",
+                "properties": {
+                    "contents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetPostsOutput"
+                        }
+                    },
+                    "nextCursor": {
+                        "type": "number"
+                    },
+                    "rePostCursor": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "contents",
+                    "nextCursor",
+                    "rePostCursor"
+                ]
+            },
+            "SearchHashTagAndUserOutput": {
+                "type": "object",
+                "properties": {
+                    "hashTags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number"
+                                },
+                                "profileImageUrl": {
+                                    "type": "string"
+                                },
+                                "userName": {
+                                    "type": "string"
+                                },
+                                "userNameTag": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "displayName": {
+                                    "type": "string"
+                                },
+                                "userType": {
+                                    "enum": [
+                                        "GENERAL",
+                                        "INFLUENCER",
+                                        "OFFICIAL",
+                                        "REPORTER",
+                                        "REPORTMANAGER"
+                                    ]
+                                },
+                                "isPreOrdered": {
+                                    "type": "boolean"
+                                },
+                                "isFollow": {
+                                    "type": "boolean"
+                                },
+                                "bondingCurveProgress": {
+                                    "type": "number",
+                                    "nullable": true
+                                },
+                                "priceFluctuationRange": {
+                                    "type": "number",
+                                    "nullable": true
+                                },
+                                "isCexListed": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "hashTags",
+                    "users"
+                ]
+            },
+            "GetAutocompleteMentionOutput": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "profileImageUrl": {
+                                "type": "string"
+                            },
+                            "userName": {
+                                "type": "string"
+                            },
+                            "userNameTag": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "displayName": {
+                                "type": "string"
+                            },
+                            "userType": {
+                                "enum": [
+                                    "GENERAL",
+                                    "INFLUENCER",
+                                    "OFFICIAL",
+                                    "REPORTER",
+                                    "REPORTMANAGER"
+                                ]
+                            },
+                            "isPreOrdered": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "tokenCexListed": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "bondingCurveProgress": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "priceFluctuationRange": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "isFollow": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "user",
+                    "tokenCexListed",
+                    "bondingCurveProgress",
+                    "priceFluctuationRange",
+                    "isFollow"
+                ]
+            },
+            "GetChainResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "example": 1
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "example": "ETH"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Ethereum"
+                    }
+                },
+                "required": [
+                    "id",
+                    "symbol",
+                    "name"
+                ]
+            },
+            "GetChainTokenWithPriceResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "example": 1
+                    },
+                    "tokenAddress": {
+                        "type": "string",
+                        "example": "0x..."
+                    },
+                    "ownerAddress": {
+                        "type": "string",
+                        "example": "0x..."
+                    },
+                    "chainId": {
+                        "type": "number",
+                        "example": 1
+                    },
+                    "chain": {
+                        "$ref": "#/components/schemas/GetChainResponseDto"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "MyToken"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "example": "MTK"
+                    },
+                    "totalSupply": {
+                        "type": "string",
+                        "example": "1000000"
+                    },
+                    "initialPrice": {
+                        "type": "string",
+                        "example": "1.0"
+                    },
+                    "targetPrice": {
+                        "type": "string",
+                        "example": "2.0"
+                    },
+                    "priceNow": {
+                        "type": "string",
+                        "example": "1.5"
+                    },
+                    "price24hAgo": {
+                        "type": "string",
+                        "example": "1.4"
+                    },
+                    "usdPriceNow": {
+                        "type": "string",
+                        "example": "1.5"
+                    },
+                    "usdPrice24hAgo": {
+                        "type": "string",
+                        "example": "1.4"
+                    },
+                    "startBlockNumber": {
+                        "type": "number",
+                        "example": 12345678
+                    },
+                    "startedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z"
+                    },
+                    "insertedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z"
+                    },
+                    "isSaleComplete": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "totalSaleAmount": {
+                        "type": "string",
+                        "example": "1000"
+                    },
+                    "totalBuyVolume": {
+                        "type": "string",
+                        "example": "500"
+                    },
+                    "totalSellVolume": {
+                        "type": "string",
+                        "example": "400"
+                    },
+                    "totalBuyAmount": {
+                        "type": "string",
+                        "example": "1000"
+                    },
+                    "totalSellAmount": {
+                        "type": "string",
+                        "example": "900"
+                    },
+                    "totalTradingVolume": {
+                        "type": "string",
+                        "example": "900"
+                    },
+                    "totalTradingAmount": {
+                        "type": "string",
+                        "example": "1900"
+                    },
+                    "totalBuyVolume24h": {
+                        "type": "string",
+                        "example": "100"
+                    },
+                    "totalSellVolume24h": {
+                        "type": "string",
+                        "example": "80"
+                    },
+                    "totalBuyAmount24h": {
+                        "type": "string",
+                        "example": "200"
+                    },
+                    "totalSellAmount24h": {
+                        "type": "string",
+                        "example": "180"
+                    },
+                    "totalTradingVolume24h": {
+                        "type": "string",
+                        "example": "180"
+                    },
+                    "totalTradingAmount24h": {
+                        "type": "string",
+                        "example": "380"
+                    },
+                    "totalDexBuyVolume": {
+                        "type": "string",
+                        "example": "50"
+                    },
+                    "totalDexSellVolume": {
+                        "type": "string",
+                        "example": "40"
+                    },
+                    "totalDexBuyAmount": {
+                        "type": "string",
+                        "example": "100"
+                    },
+                    "totalDexSellAmount": {
+                        "type": "string",
+                        "example": "90"
+                    }
+                },
+                "required": [
+                    "id",
+                    "tokenAddress",
+                    "ownerAddress",
+                    "chainId",
+                    "chain",
+                    "name",
+                    "symbol",
+                    "totalSupply",
+                    "initialPrice",
+                    "targetPrice",
+                    "priceNow",
+                    "price24hAgo",
+                    "usdPriceNow",
+                    "usdPrice24hAgo",
+                    "startBlockNumber",
+                    "startedAt",
+                    "insertedAt",
+                    "isSaleComplete",
+                    "totalSaleAmount",
+                    "totalBuyVolume",
+                    "totalSellVolume",
+                    "totalBuyAmount",
+                    "totalSellAmount",
+                    "totalTradingVolume",
+                    "totalTradingAmount",
+                    "totalBuyVolume24h",
+                    "totalSellVolume24h",
+                    "totalBuyAmount24h",
+                    "totalSellAmount24h",
+                    "totalTradingVolume24h",
+                    "totalTradingAmount24h",
+                    "totalDexBuyVolume",
+                    "totalDexSellVolume",
+                    "totalDexBuyAmount",
+                    "totalDexSellAmount"
+                ]
+            },
+            "GetChainTokenLatestPriceResponseDto": {
+                "type": "object",
+                "properties": {
+                    "chainToken": {
+                        "$ref": "#/components/schemas/GetChainTokenWithPriceResponseDto"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z"
+                    },
+                    "openPrice": {
+                        "type": "string",
+                        "example": "1.0"
+                    },
+                    "closePrice": {
+                        "type": "string",
+                        "example": "1.2"
+                    },
+                    "lowPrice": {
+                        "type": "string",
+                        "example": "0.9"
+                    },
+                    "highPrice": {
+                        "type": "string",
+                        "example": "1.3"
+                    },
+                    "volume": {
+                        "type": "string",
+                        "example": "1000"
+                    },
+                    "usdPrice": {
+                        "type": "string",
+                        "example": "1.1"
+                    }
+                },
+                "required": [
+                    "chainToken",
+                    "timestamp",
+                    "openPrice",
+                    "closePrice",
+                    "lowPrice",
+                    "highPrice",
+                    "volume",
+                    "usdPrice"
+                ]
+            },
+            "TokenPriceDetailsDto": {
+                "type": "object",
+                "properties": {
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z"
+                    },
+                    "openPrice": {
+                        "type": "string",
+                        "example": "1.0"
+                    },
+                    "closePrice": {
+                        "type": "string",
+                        "example": "1.2"
+                    },
+                    "lowPrice": {
+                        "type": "string",
+                        "example": "0.9"
+                    },
+                    "highPrice": {
+                        "type": "string",
+                        "example": "1.3"
+                    },
+                    "volume": {
+                        "type": "string",
+                        "example": "1000"
+                    }
+                },
+                "required": [
+                    "timestamp",
+                    "openPrice",
+                    "closePrice",
+                    "lowPrice",
+                    "highPrice",
+                    "volume"
+                ]
+            },
+            "GetChainTokenPricesResponseDto": {
+                "type": "object",
+                "properties": {
+                    "chainToken": {
+                        "$ref": "#/components/schemas/GetChainTokenWithPriceResponseDto"
+                    },
+                    "totalElements": {
+                        "type": "number",
+                        "example": 100
+                    },
+                    "content": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TokenPriceDetailsDto"
+                        }
+                    },
+                    "usdContent": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TokenPriceDetailsDto"
+                        }
+                    }
+                },
+                "required": [
+                    "chainToken",
+                    "totalElements",
+                    "content",
+                    "usdContent"
+                ]
+            },
+            "MockUserData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "User ID"
+                    },
+                    "userName": {
+                        "type": "string",
+                        "description": "User Name"
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "description": "Display Name"
+                    },
+                    "userNameTag": {
+                        "type": "string",
+                        "description": "User Name Tag"
+                    },
+                    "accessToken": {
+                        "type": "string",
+                        "description": "Access Token"
+                    },
+                    "walletAddress": {
+                        "type": "string",
+                        "description": "Wallet Address"
+                    },
+                    "walletPrivateKey": {
+                        "type": "string",
+                        "description": "Wallet Private Key"
+                    }
+                },
+                "required": [
+                    "id",
+                    "userName",
+                    "displayName",
+                    "userNameTag",
+                    "accessToken",
+                    "walletAddress",
+                    "walletPrivateKey"
+                ]
+            },
+            "IMemexSaleStruct_SaleToken": {
+                "type": "object",
+                "description": "Structure representing sale token info.",
+                "properties": {
+                    "owner": {
+                        "type": "string",
+                        "example": "0x000...000"
+                    },
+                    "total": {
+                        "type": "string",
+                        "example": "1000000"
+                    },
+                    "remain": {
+                        "type": "string",
+                        "example": "1000000"
+                    },
+                    "reserve": {
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "initPrice": {
+                        "type": "string",
+                        "example": "10000000000"
+                    },
+                    "targetPrice": {
+                        "type": "string",
+                        "example": "100000000000"
+                    },
+                    "collect": {
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "xRemain": {
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "uint8",
+                        "example": 1
+                    }
+                }
+            },
+            "GetSaleTokenInfoResponse": {
+                "type": "object",
+                "properties": {
+                    "info": {
+                        "$ref": "#/components/schemas/IMemexSaleStruct_SaleToken"
+                    },
+                    "pers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "1000"
+                        }
+                    }
+                }
+            },
+            "BuyTokenRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "0x...TokenAddress"
+                    },
+                    "amountIn": {
+                        "type": "string",
+                        "example": "1000000000000000000"
+                    },
+                    "amountOut": {
+                        "type": "string",
+                        "example": "99000000"
+                    },
+                    "slippage": {
+                        "type": "string",
+                        "example": "50"
+                    }
+                },
+                "required": [
+                    "token",
+                    "amountIn",
+                    "amountOut",
+                    "slippage"
+                ]
+            },
+            "SellTokenRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "0x...TokenAddress"
+                    },
+                    "amountIn": {
+                        "type": "string",
+                        "example": "1000000"
+                    },
+                    "amountOut": {
+                        "type": "string",
+                        "example": "99000000000000000"
+                    },
+                    "slippage": {
+                        "type": "string",
+                        "example": "50"
+                    }
+                },
+                "required": [
+                    "token",
+                    "amountIn",
+                    "amountOut",
+                    "slippage"
+                ]
+            },
+            "DonateDepositRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "0x...TokenAddress"
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
+            "DonateWithdrawRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "0x...TokenAddress"
+                    },
+                    "amount": {
+                        "type": "string",
+                        "example": "1000000000000000000"
+                    }
+                },
+                "required": [
+                    "token",
+                    "amount"
+                ]
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Detailed error message."
+                    }
+                }
+            },
+            "SwapSingleBuyRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "0x...TokenAddress"
+                    },
+                    "amountOutMin": {
+                        "type": "string",
+                        "example": "1000000000000000000"
+                    }
+                },
+                "required": [
+                    "token",
+                    "amountOutMin"
+                ]
+            },
+            "SwapSingleSellRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "0x...TokenAddress"
+                    },
+                    "amountIn": {
+                        "type": "string",
+                        "example": "1000000000000000000"
+                    },
+                    "amountOutMin": {
+                        "type": "string",
+                        "example": "9900000000000000"
+                    }
+                },
+                "required": [
+                    "token",
+                    "amountIn",
+                    "amountOutMin"
+                ]
+            },
+            "LockedInfo": {
+                "type": "object",
+                "description": "Structure representing a single locked deposit.",
+                "properties": {
+                    "unlockBlock": {
+                        "type": "string",
+                        "description": "Block number when this amount unlocks.",
+                        "example": "12345678"
+                    },
+                    "balance": {
+                        "type": "string",
+                        "description": "Amount locked in this entry.",
+                        "example": "1000000000000000000"
+                    }
+                }
+            },
+            "DepositRequest": {
+                "type": "object",
+                "properties": {
+                    "lockPeriod": {
+                        "type": "string",
+                        "description": "Lock period in seconds or blocks (refer to contract logic).",
+                        "example": "2592000"
+                    }
+                },
+                "required": [
+                    "lockPeriod"
+                ]
+            },
+            "WithdrawRequest": {
+                "type": "object",
+                "properties": {
+                    "amounts": {
+                        "type": "string",
+                        "description": "Amount to withdraw (must be <= unlockBalanceOf).",
+                        "example": "5000000000000000000"
+                    }
+                },
+                "required": [
+                    "amounts"
+                ]
+            }
+        },
+        "parameters": {},
+        "responses": {},
+        "requestBodies": {}
+    }
+}

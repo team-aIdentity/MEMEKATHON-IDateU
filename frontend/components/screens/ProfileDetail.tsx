@@ -1,7 +1,6 @@
 "use client";
 import { ChevronLeft, MapPin } from "lucide-react";
-const imgPhotoContainer =
-  "/assets/9a8e77382af614360fcd56ae19b7c04505c6581f.png";
+const imgPhotoContainer = "/assets/basic-profile.png";
 import { Button } from "@/components/ui/button";
 
 interface ProfileDetailProps {
@@ -48,7 +47,7 @@ export default function ProfileDetail({ profile, onBack }: ProfileDetailProps) {
         {/* Photo Container */}
         <div className="absolute left-1/2 -translate-x-1/2 top-[calc(50%-42.5px)] -translate-y-1/2 rounded-[60px] size-[120px]">
           <div className="absolute inset-0 rounded-[60px]">
-            {profile.id === "1" ? (
+            {profile.id === "1" || profile.id === "2" ? (
               <img
                 alt={profile.name}
                 className="absolute max-w-none object-cover rounded-[60px] size-full"

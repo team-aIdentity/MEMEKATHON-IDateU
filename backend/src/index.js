@@ -14,7 +14,13 @@ import memexRoutes from './routes/memex.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+// CORS 설정 - 모든 origin 허용 (개발 환경)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'],
+  credentials: false,
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 
@@ -39,13 +45,11 @@ async function start() {
   });
 }
 
-// Only start server if run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  start().catch((err) => {
-    console.error('Failed to start server', err);
-    process.exit(1);
-  });
-}
+// Start server
+start().catch((err) => {
+  console.error('Failed to start server', err);
+  process.exit(1);
+});
 
 export default app;
 

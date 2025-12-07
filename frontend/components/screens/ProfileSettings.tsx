@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ChevronLeft, MapPin, Camera, Plus } from "lucide-react";
-const imgMemeIcon = "/assets/ca4e002f8159f6979025a13ce2c4d1869fc8a4ac.png";
+const imgMemeIcon = "/assets/MemeX.png";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useDID } from "@/lib/hooks";
@@ -36,14 +36,7 @@ export default function ProfileSettings({
 }: ProfileSettingsProps) {
   const { userInfo: didUserInfo } = useDID();
   
-  // DID에서 국적 가져오기
-  const getCountryFromDID = (): string => {
-    if (!didUserInfo?.commit?.countryCommit) return "미설정";
-    const countryCode = didUserInfo.commit.countryCommit.replace("country_", "");
-    return getCountryName(countryCode);
-  };
-
-  // DID에서 나이와 성별 가져오기
+  // DID에서 나이와 성별, 국적 가져오기 (localStorage에 저장된 초기 설정값 사용)
   const getAgeFromDID = (): number | null => {
     if (typeof window === 'undefined') return null;
     const birthYear = localStorage.getItem('user_birth_year');
@@ -54,17 +47,22 @@ export default function ProfileSettings({
   };
 
   const getGenderFromDID = (): string => {
-    if (!didUserInfo?.commit?.genderFlag) return 'Unknown';
-    const genderFlag = typeof didUserInfo.commit.genderFlag === 'string' 
-      ? parseInt(didUserInfo.commit.genderFlag, 10) 
-      : Number(didUserInfo.commit.genderFlag);
-    if (isNaN(genderFlag)) return 'Unknown';
-    return genderFlag === 1 ? 'Male' : genderFlag === 0 ? 'Female' : 'Unknown';
+    if (typeof window === 'undefined') return 'Unknown';
+    const gender = localStorage.getItem('user_gender');
+    if (!gender) return 'Unknown';
+    return gender.charAt(0).toUpperCase() + gender.slice(1); // Capitalize
+  };
+
+  const getCountryFromDID = (): string => {
+    if (typeof window === 'undefined') return "미설정";
+    const countryCode = localStorage.getItem('user_country');
+    if (!countryCode) return "미설정";
+    return getCountryName(countryCode);
   };
 
   // 초기값: localStorage에서 불러오거나 빈 값
   const [name, setName] = useState("");
-  const [country, setCountry] = useState(""); // DID에서 가져올 예정
+  const [country, setCountry] = useState(""); 
   const [bio, setBio] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [userAge, setUserAge] = useState<number | null>(null);
@@ -84,11 +82,11 @@ export default function ProfileSettings({
       }
     }
     
-    // DID 정보에서 국적, 나이, 성별 설정
+    // DID 정보(localStorage)에서 국적, 나이, 성별 설정
     setCountry(getCountryFromDID());
     setUserAge(getAgeFromDID());
     setUserGender(getGenderFromDID());
-  }, [didUserInfo]);
+  }, []);
 
   const handleSave = () => {
     if (!name.trim()) {
@@ -228,7 +226,7 @@ export default function ProfileSettings({
               </div>
             </div>
             <p className="font-['Inter:Regular','Noto_Sans_KR:Regular',sans-serif] text-[#6C757D] text-[12px]">
-              국적은 DID 인증 정보로부터 자동으로 설정되며 변경할 수 없습니다.
+              국적, 나이, 성별은 초기 DID 설정(KYC)을 따르며 변경할 수 없습니다.
             </p>
           </div>
         </div>
@@ -301,24 +299,23 @@ export default function ProfileSettings({
         </div>
       </div>
 
-      {/* MemeX Button */}
-      <div className="flex flex-col gap-4 px-[37px] py-6 w-full">
-        <Button
-          onClick={handleMemeXConnect}
-          disabled={memeXConnected}
-          className={`w-full h-[54px] rounded-[10px] shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08),0px_2px_3px_0px_rgba(0,0,0,0.17)] ${
-            memeXConnected
-              ? "bg-green-600 hover:bg-green-700"
-              : "bg-[#0c041e] hover:bg-[#1a0a30]"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <img alt="MemeX" className="size-[20px]" src={imgMemeIcon} />
-            <p className="font-['Roboto:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium text-[20px] text-white">
-              {memeXConnected ? "MemeX 연동됨 ✓" : "MemeX 연동"}
-            </p>
-          </div>
-        </Button>
+        {/* MemeX Button */}
+        <div className="flex flex-col gap-4 px-[37px] py-6 w-full">
+          <Button
+            onClick={handleMemeXConnect}
+            className={`w-full h-[54px] rounded-[10px] shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08),0px_2px_3px_0px_rgba(0,0,0,0.17)] ${
+              memeXConnected
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-[#0c041e] hover:bg-[#1a0a30]"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <img alt="MemeX" className="size-[20px]" src={imgMemeIcon} />
+              <p className="font-['Roboto:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium text-[20px] text-white">
+                {memeXConnected ? "MemeX 연동 해제" : "MemeX 연동"}
+              </p>
+            </div>
+          </Button>
 
         {memeXConnected && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-3">

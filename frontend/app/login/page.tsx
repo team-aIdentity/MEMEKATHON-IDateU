@@ -22,7 +22,8 @@ export default function LoginPage() {
       }
       
       // KYC 완료 여부 확인
-      // 로컬 스토리지에서 DID 인증 상태 확인
+      // 로컬 스토리지에서 DID 인증 상태 확인 ('mock_did_auth')
+      // 로그아웃 시 이 값도 삭제되어야 함
       const hasDID = typeof window !== 'undefined' && localStorage.getItem('mock_did_auth');
       
       if (!hasDID) {

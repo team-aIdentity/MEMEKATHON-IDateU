@@ -42,6 +42,12 @@ export default function ProfileSetup({ onComplete }: ProfileSetupProps) {
 
   const handleKycSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Store essential DID data locally
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user_birth_year', birthYear);
+      localStorage.setItem('user_gender', gender);
+      localStorage.setItem('user_country', country);
+    }
     onComplete({
       name,
       gender,

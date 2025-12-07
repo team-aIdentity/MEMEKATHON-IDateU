@@ -68,8 +68,15 @@ export default function KYCSetup({ onComplete }: KYCSetupProps) {
       const vcData: KYCResult = {
         gender: formData.gender === '남성' ? 'M' : 'F',
         isAdult19: true,
-        country: formData.country || 'KR',
+        country: formData.country === '대한민국' ? 'KR' : formData.country === '미국' ? 'US' : formData.country === '일본' ? 'JP' : formData.country === '중국' ? 'CN' : 'KR',
       };
+      
+      // Save initial profile data from KYC
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user_birth_year', formData.birthYear);
+        localStorage.setItem('user_gender', vcData.gender === 'M' ? 'male' : 'female');
+        localStorage.setItem('user_country', vcData.country);
+      }
 
       setFormData({ ...formData, over19: true });
       toast.success('KYC 인증이 완료되었습니다! 🎉');

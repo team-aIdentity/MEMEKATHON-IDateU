@@ -1,6 +1,6 @@
 'use client';
 import svgPaths from "@/lib/imports/svg-uw8als81a3";
-const imgFavorite = "/assets/8afcb3be85c8721ba3cd276ff9ac83cb470e929b.png";
+const imgLogo = "/assets/IDateU_logo.png";
 
 function LogoGoogleg48Dp() {
   return (
@@ -48,14 +48,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
       {/* Logo Section */}
       <div className="flex flex-col items-center mb-16">
         <div className="size-[120px] mb-4 relative">
-          <img alt="IDateU Logo" className="absolute inset-0 max-w-none object-50%-50% object-contain pointer-events-none size-full" src={imgFavorite} />
-          <div className="absolute h-[28px] left-[41.33px] top-[52.67px] w-[44.667px]">
-            <div className="absolute inset-[-14.29%_-8.96%_-20.58%_-8.96%]">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 53 38">
-                <path d={svgPaths.p1eccc440} id="Vector 4" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeWidth="8" />
-              </svg>
-            </div>
-          </div>
+          <img alt="IDateU Logo" className="absolute inset-0 max-w-none object-50%-50% object-contain pointer-events-none size-full" src={imgLogo} />
         </div>
         <h1 className="font-['Jaldi:Bold',sans-serif] not-italic text-[#ffffe5] text-[80px] leading-[100px] text-nowrap">IDateU</h1>
       </div>

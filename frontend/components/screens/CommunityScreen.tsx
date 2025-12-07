@@ -1,9 +1,11 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Image as ImageIcon, MoreHorizontal } from "lucide-react";
+import { useMemeXApi } from "@/lib/hooks";
+import type { FeedPost } from "@/lib/types/api";
+import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 const imgMemeIcon = "/assets/ca4e002f8159f6979025a13ce2c4d1869fc8a4ac.png";
 const img20251126248121 = "/assets/6042139a0b353149933fc8e7fce4b7f23d8faabf.png";
-import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 
 interface CommunityScreenProps {
   isMemeXConnected: boolean;
@@ -64,6 +66,55 @@ function CommunityOnboarding({ onConnect }: { onConnect: () => void }) {
 function CommunityFeed() {
   const [activeTab, setActiveTab] = useState<'foryou' | 'latest' | 'following'>('foryou');
   const [showMore, setShowMore] = useState(false);
+  const [posts, setPosts] = useState<FeedPost[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const memeXApi = useMemeXApi();
+
+  // 피드 데이터 조회
+  useEffect(() => {
+    const fetchFeed = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        console.log('[CommunityFeed] 피드 조회 시작:', activeTab);
+        let feedData;
+        
+        if (activeTab === 'latest') {
+          // Latest 피드 조회 (인증 불필요)
+          feedData = await memeXApi.getLatestPosts({ limit: 20 });
+        } else if (activeTab === 'following') {
+          // Following 피드 조회 (인증 필요)
+          feedData = await memeXApi.getFollowingFeed({ limit: 20 });
+        } else {
+          // For you 피드 조회 (기본 피드, 인증 불필요)
+          feedData = await memeXApi.getFeed(0, { limit: 20 }); // type 0 = For you
+        }
+        
+        console.log('[CommunityFeed] 피드 조회 성공:', {
+          tab: activeTab,
+          postCount: feedData?.contents?.length || 0,
+          nextCursor: feedData?.nextCursor,
+          type: feedData?.type,
+        });
+        
+        setPosts(feedData?.contents || []);
+      } catch (err: any) {
+        console.error('[CommunityFeed] 피드 조회 실패:', {
+          tab: activeTab,
+          error: err,
+          message: err?.message,
+          status: err?.status,
+        });
+        setError(err?.message || '피드를 불러오는데 실패했습니다.');
+        setPosts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeed();
+  }, [activeTab]);
 
   return (
     <div className="bg-[#0c041e] relative size-full overflow-auto pb-[70px]" data-name="Community">
@@ -285,6 +336,110 @@ function CommunityFeed() {
           </div>
         </div>
       </div>
+
+      {/* Feed Posts from API */}
+      {isLoading ? (
+        <div className="p-[16px] text-center text-[#71767b]">
+          <p>피드를 불러오는 중...</p>
+        </div>
+      ) : error ? (
+        <div className="p-[16px] text-center text-red-400">
+          <p>{error}</p>
+        </div>
+      ) : posts.length === 0 ? (
+        <div className="p-[16px] text-center text-[#71767b]">
+          <p>게시물이 없습니다.</p>
+        </div>
+      ) : (
+        posts.map((post) => (
+          <div key={post.id} className="border-b border-[#2f2f2f] p-[16px]">
+            <div className="flex gap-[12px]">
+              {/* Profile Picture */}
+              <div className="size-[40px] rounded-full overflow-hidden shrink-0">
+                <ImageWithFallback
+                  src={post.postMeta.creator.profileImageUrl || imgMemeIcon}
+                  alt={post.postMeta.creator.displayName}
+                  className="size-full object-cover"
+                />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-[4px]">
+                  <div className="flex items-center gap-[4px]">
+                    <p className="font-['Inter:Bold',sans-serif] font-bold text-white text-[15px]">
+                      {post.postMeta.creator.displayName}
+                    </p>
+                    <span className="text-[#71767b] text-[15px] font-['Inter:Regular',sans-serif]">
+                      · {new Date(post.postMeta.createdAt).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                  
+                  <button className="text-[#71767b] hover:text-white">
+                    <MoreHorizontal className="size-[20px]" />
+                  </button>
+                </div>
+
+                {/* Username */}
+                <p className="text-[#71767b] text-[15px] mb-[8px] font-['Inter:Regular',sans-serif]">
+                  @{post.postMeta.creator.userName} {post.postMeta.creator.userNameTag ? `#${post.postMeta.creator.userNameTag}` : ''}
+                </p>
+
+                {/* Content */}
+                <div className="text-white">
+                  <p className="font-['Inter:Regular',sans-serif] text-[15px] leading-[20px] mb-[4px]">
+                    {post.value}
+                  </p>
+                  
+                  {/* Images */}
+                  {post.imageSrc && post.imageSrc.length > 0 && (
+                    <div className="mt-[12px] rounded-[16px] overflow-hidden">
+                      {post.imageSrc.map((img, idx) => (
+                        <ImageWithFallback
+                          key={idx}
+                          alt={`Post image ${idx + 1}`}
+                          className="w-full object-cover"
+                          src={img}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-around mt-[12px] text-[#71767b]">
+                  <button className="flex items-center gap-[8px] hover:text-[#4A9EFF] transition-colors">
+                    <svg className="size-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span className="text-[13px]">{post.socialMeta.replyCount || 0}</span>
+                  </button>
+
+                  <button className="flex items-center gap-[8px] hover:text-[#00ba7c] transition-colors">
+                    <svg className="size-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span className="text-[13px]">{post.socialMeta.repostCount || 0}</span>
+                  </button>
+
+                  <button className="flex items-center gap-[8px] hover:text-[#f91880] transition-colors">
+                    <svg className="size-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    <span className="text-[13px]">{post.socialMeta.likeCount || 0}</span>
+                  </button>
+
+                  <button className="flex items-center gap-[8px] hover:text-[#4A9EFF] transition-colors">
+                    <svg className="size-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 }

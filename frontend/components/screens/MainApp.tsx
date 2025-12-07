@@ -73,9 +73,16 @@ export default function MainApp() {
   const memeXApi = useMemeXApi();
 
   const handleConnectMemeX = async () => {
+    if (memeXConnected) {
+      // Disconnect
+      setMemeXConnected(false);
+      toast.success('MemeX 연동이 해제되었습니다.');
+      return;
+    }
+
     try {
-      // MemeX API 연결 확인 (예: 사용자 정보 조회)
-      await memeXApi.getMyInfo();
+      // MemeX API 연결 확인 (해커톤용 mock 데이터 사용으로 변경 - Auth 불필요)
+      await memeXApi.getMockUserData();
       setMemeXConnected(true);
       toast.success('MemeX Zone에 연결되었습니다! 🚀', {
         description: '이제 커뮤니티를 사용할 수 있습니다.',
@@ -83,7 +90,7 @@ export default function MainApp() {
       // Automatically navigate to community screen after connection
       setCurrentScreen('community');
     } catch (error) {
-      toast.error('MemeX 연결에 실패했습니다. 로그인이 필요합니다.');
+      toast.error('MemeX 연결에 실패했습니다.');
       console.error('MemeX connection error:', error);
     }
   };
@@ -146,8 +153,18 @@ export default function MainApp() {
   };
 
   const handleLogout = () => {
-    toast.success('로그아웃 되었습니다');
-    window.location.reload();
+    // Clear auth token & profile data for testing KYC again
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('memex_access_token');
+      // Clear DID/Profile data to force re-KYC for testing purposes
+      localStorage.removeItem('mock_did_auth'); // CRITICAL: This triggers KYC check in login
+      localStorage.removeItem('user_birth_year');
+      localStorage.removeItem('user_gender');
+      localStorage.removeItem('user_country');
+      localStorage.removeItem('user_profile');
+    }
+    toast.success('로그아웃 되었습니다 (테스트용: 데이터 초기화됨)');
+    window.location.href = '/login'; 
   };
 
   const renderScreen = () => {

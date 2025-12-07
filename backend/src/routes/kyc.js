@@ -34,8 +34,11 @@ router.post('/submit', auth, async (req, res) => {
     req.user.country_code = (country || '').toUpperCase();
     await req.user.save();
 
-    // Mock on-chain registration call
-    const countryCommit = didCommit; // placeholder until a real countryCommit is defined
+    // Create country commit (keccak256 hash of country code)
+    const { keccak256, toUtf8Bytes } = await import('ethers');
+    const countryCommit = keccak256(toUtf8Bytes(country.toUpperCase()));
+    
+    // On-chain registration call
     const onchain = await registerOrUpdateDIDOnChain({
       userCommit: didCommit,
       isAdult,

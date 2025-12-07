@@ -3,8 +3,9 @@ import { useState } from "react";
 import { motion, useMotionValue, useTransform } from "motion/react";
 import { toast } from "sonner";
 import svgPaths from "@/lib/imports/svg-2upy61fujl";
-const imgPhotoArea = "/assets/5e9bf40e5037ae3c728ad4ad794aee13dde133b3.png";
-const imgReturn = "/assets/31e63e0f7160a1271600a165358c72dff0ca15b1.png";
+const imgPhotoArea = "/assets/matchpic0.jpg";
+const imgPhotoArea1 = "/assets/matchpic1.jpg";
+const imgReturn = "/assets/Back Button.png";
 
 interface Profile {
   id: string;
@@ -44,7 +45,7 @@ const SAMPLE_PROFILES: Profile[] = [
     age: 26,
     bio: '',
     interests: ['독서', '요가', '음악'],
-    image: 'woman portrait nature',
+    image: imgPhotoArea1,
     location: 'Seoul',
     gender: '여성',
   },
@@ -221,7 +222,7 @@ function SwipeableCard({ profile, onSwipe, onSwipeSuper, onProfileClick }: Swipe
       >
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-tl-[16px] rounded-tr-[16px]">
           <div className="absolute bg-gradient-to-l from-[#acd5f2] inset-0 rounded-tl-[16px] rounded-tr-[16px] to-[#2985c6]" />
-          {profile.id === '1' ? (
+          {profile.id === '1' || profile.id === '2' ? (
             <img alt="" className="absolute max-w-none object-50%-50% object-cover rounded-tl-[16px] rounded-tr-[16px] size-full" src={profile.image} />
           ) : (
             <img alt="" className="absolute max-w-none object-50%-50% object-cover rounded-tl-[16px] rounded-tr-[16px] size-full" src={`https://source.unsplash.com/340x360/?${profile.image}`} />
@@ -301,7 +302,7 @@ function SwipeableCard({ profile, onSwipe, onSwipeSuper, onProfileClick }: Swipe
 
           {/* Rewind Button */}
           <div className="bg-[#ffecba] box-border content-stretch flex items-center justify-center relative rounded-[30px] shadow-[0px_2px_8px_0px_rgba(0,188,212,0.19)] shrink-0 size-[60px]" data-name="Super Like Button">
-            <div className="relative shrink-0 size-[25px]" data-name="Return">
+            <div className="relative shrink-0 size-[75px]" data-name="Return">
               <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-contain pointer-events-none size-full" src={imgReturn} />
             </div>
           </div>

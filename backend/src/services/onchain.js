@@ -1,131 +1,222 @@
-// On-chain DID registration using DIDRegistry contract
-import { ethers } from 'ethers';
-import dotenv from 'dotenv';
+// On-chain service for DIDRegistry and ItemPayment contracts
+import { ethers } from "ethers";
 
-dotenv.config();
-
-// DIDRegistry ABI (registerOrUpdateDID 함수만 포함)
+// Contract ABIs (minimal, only required functions)
 const DID_REGISTRY_ABI = [
-  {
-    inputs: [
-      { name: 'userCommit', type: 'bytes32' },
-      { name: 'isAdult', type: 'bool' },
-      { name: 'gender', type: 'uint8' },
-      { name: 'countryCommit', type: 'bytes32' },
-    ],
-    name: 'registerOrUpdateDID',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'issuer',
-    outputs: [{ name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
+  "function registerOrUpdateDID(bytes32 userCommit, bool isAdult, uint8 gender, bytes32 countryCommit) external",
+  "function didOf(bytes32 userCommit) view returns (bool isAdult, uint8 gender, bytes32 countryCommit, uint64 issuedAt)",
+  "function issuer() view returns (address)",
+  "event DIDRegistered(bytes32 indexed userCommit, bool isAdult, uint8 gender, bytes32 countryCommit)",
 ];
 
+const ITEM_PAYMENT_ABI = [
+  "function itemPrice(uint8 itemId) view returns (uint256)",
+  "function buyItem(uint8 itemId) external payable",
+  "event ItemPurchased(address indexed buyer, uint8 indexed itemId, uint256 price)",
+];
+
+// Configuration from environment
+const RPC_URL = process.env.RPC_URL || "https://rpc.formicarium.memecore.net";
+const CHAIN_ID = parseInt(process.env.CHAIN_ID || "43521", 10);
+const DID_REGISTRY_ADDRESS = process.env.DID_REGISTRY_ADDRESS || "0x526764626f9b83B5A2FcDac5Dbd921E3b7d24E21";
+const ITEM_PAYMENT_ADDRESS = process.env.ITEM_PAYMENT_ADDRESS || "0x91B6Ff86A7f065343BcCdfFf3cDE193443C9F9f2";
+const ISSUER_PRIVATE_KEY = process.env.ISSUER_PRIVATE_KEY;
+
+// Provider and Wallet setup
+let provider = null;
+let wallet = null;
+let didRegistry = null;
+let itemPayment = null;
+
 /**
- * DID를 온체인에 등록/업데이트
- * @param {Object} params
- * @param {string} params.userCommit - bytes32 hex string (0x...)
- * @param {boolean} params.isAdult - 만 19세 여부
- * @param {number} params.gender - 0: unknown, 1: male, 2: female, 3: other
- * @param {string} params.countryCommit - bytes32 hex string (0x...)
- * @returns {Promise<{txHash: string, blockNumber?: number}>}
+ * Initialize blockchain connections
  */
-export async function registerOrUpdateDIDOnChain({
-  userCommit,
-  isAdult,
-  gender,
-  countryCommit,
-}) {
+function initializeProvider() {
+  if (provider) return;
+
   try {
-    console.log('[onchain] registerOrUpdateDID 시작:', {
-      userCommit,
-      isAdult,
-      gender,
-      countryCommit,
+    provider = new ethers.JsonRpcProvider(RPC_URL, {
+      chainId: CHAIN_ID,
+      name: "formicarium-testnet",
     });
 
-    // 환경 변수 확인
-    const didRegistryAddress = process.env.DID_REGISTRY_ADDRESS;
-    const issuerPrivateKey = process.env.ISSUER_PRIVATE_KEY;
-    const rpcUrl = process.env.RPC_URL || 'https://rpc.formicarium.memecore.net';
+    console.log(`[onchain] Connected to RPC: ${RPC_URL} (chainId: ${CHAIN_ID})`);
 
-    if (!didRegistryAddress) {
-      throw new Error('DID_REGISTRY_ADDRESS 환경 변수가 설정되지 않았습니다.');
+    // Initialize wallet if private key is available
+    if (ISSUER_PRIVATE_KEY && ISSUER_PRIVATE_KEY !== "your_private_key_here") {
+      wallet = new ethers.Wallet(ISSUER_PRIVATE_KEY, provider);
+      console.log(`[onchain] Issuer wallet: ${wallet.address}`);
+
+      // Initialize contracts with signer
+      didRegistry = new ethers.Contract(DID_REGISTRY_ADDRESS, DID_REGISTRY_ABI, wallet);
+      itemPayment = new ethers.Contract(ITEM_PAYMENT_ADDRESS, ITEM_PAYMENT_ABI, wallet);
+    } else {
+      console.warn("[onchain] ISSUER_PRIVATE_KEY not set - running in read-only mode");
+      // Initialize contracts with provider only (read-only)
+      didRegistry = new ethers.Contract(DID_REGISTRY_ADDRESS, DID_REGISTRY_ABI, provider);
+      itemPayment = new ethers.Contract(ITEM_PAYMENT_ADDRESS, ITEM_PAYMENT_ABI, provider);
     }
+  } catch (error) {
+    console.error("[onchain] Failed to initialize provider:", error.message);
+    throw error;
+  }
+}
 
-    if (!issuerPrivateKey) {
-      throw new Error(
-        'ISSUER_PRIVATE_KEY 환경 변수가 설정되지 않았습니다. Issuer 권한이 있는 지갑의 Private Key를 설정해주세요.'
-      );
-    }
+/**
+ * Ensure provider is initialized
+ */
+function ensureInitialized() {
+  if (!provider) {
+    initializeProvider();
+  }
+}
 
-    // Provider 생성 (Formicarium Testnet)
-    const provider = new ethers.JsonRpcProvider(rpcUrl);
-    console.log('[onchain] Provider 생성 완료:', rpcUrl);
+/**
+ * Register or update DID on-chain
+ * @param {Object} params
+ * @param {string} params.userCommit - bytes32 hex string
+ * @param {boolean} params.isAdult
+ * @param {number} params.gender - 0: unknown, 1: male, 2: female, 3: other
+ * @param {string} params.countryCommit - bytes32 hex string
+ * @returns {Promise<{txHash: string, success: boolean}>}
+ */
+export async function registerOrUpdateDIDOnChain({ userCommit, isAdult, gender, countryCommit }) {
+  ensureInitialized();
 
-    // Issuer 지갑 생성
-    const wallet = new ethers.Wallet(issuerPrivateKey, provider);
-    const issuerAddress = wallet.address;
-    console.log('[onchain] Issuer 지갑 주소:', issuerAddress);
+  console.log("[onchain] registerOrUpdateDID", { userCommit, isAdult, gender, countryCommit });
 
-    // 컨트랙트 인스턴스 생성
-    const contract = new ethers.Contract(didRegistryAddress, DID_REGISTRY_ABI, wallet);
-    console.log('[onchain] 컨트랙트 인스턴스 생성 완료:', didRegistryAddress);
+  // Check if wallet is available (need private key for write operations)
+  if (!wallet) {
+    console.warn("[onchain] No wallet configured - returning mock response");
+    return {
+      txHash: null,
+      success: false,
+      mock: true,
+      error: "ISSUER_PRIVATE_KEY not configured",
+    };
+  }
 
-    // 컨트랙트의 issuer 확인
-    const contractIssuer = await contract.issuer();
-    console.log('[onchain] 컨트랙트 Issuer:', contractIssuer);
-    
-    if (contractIssuer.toLowerCase() !== issuerAddress.toLowerCase()) {
-      throw new Error(
-        `Issuer 주소가 일치하지 않습니다. 컨트랙트: ${contractIssuer}, 지갑: ${issuerAddress}`
-      );
-    }
+  try {
+    // Ensure userCommit and countryCommit are proper bytes32
+    const userCommitBytes32 = ethers.zeroPadValue(userCommit.startsWith("0x") ? userCommit : `0x${userCommit}`, 32);
+    const countryCommitBytes32 = ethers.zeroPadValue(
+      countryCommit.startsWith("0x") ? countryCommit : `0x${countryCommit}`,
+      32
+    );
 
-    // 파라미터 변환 (hex string을 bytes32로 변환)
-    // userCommit과 countryCommit은 이미 hex string (0x...)
-    // ethers.js는 hex string을 자동으로 bytes32로 변환합니다
-    const userCommitBytes32 = userCommit.startsWith('0x') ? userCommit : `0x${userCommit}`;
-    const countryCommitBytes32 = countryCommit.startsWith('0x') ? countryCommit : `0x${countryCommit}`;
-
-    console.log('[onchain] 트랜잭션 전송 준비:', {
+    console.log("[onchain] Sending transaction...", {
       userCommit: userCommitBytes32,
       isAdult,
       gender,
       countryCommit: countryCommitBytes32,
     });
 
-    // 트랜잭션 전송
-    const tx = await contract.registerOrUpdateDID(
-      userCommitBytes32,
-      isAdult,
-      gender,
-      countryCommitBytes32
-    );
-    console.log('[onchain] 트랜잭션 전송됨:', tx.hash);
+    const tx = await didRegistry.registerOrUpdateDID(userCommitBytes32, isAdult, gender, countryCommitBytes32);
 
-    // 트랜잭션 대기
+    console.log("[onchain] Transaction sent:", tx.hash);
+
+    // Wait for transaction confirmation
     const receipt = await tx.wait();
-    console.log('[onchain] 트랜잭션 완료:', {
-      hash: receipt.hash,
-      blockNumber: receipt.blockNumber,
-      gasUsed: receipt.gasUsed.toString(),
-    });
+    console.log("[onchain] Transaction confirmed:", receipt.hash, "Block:", receipt.blockNumber);
 
     return {
       txHash: receipt.hash,
       blockNumber: receipt.blockNumber,
-      gasUsed: receipt.gasUsed.toString(),
+      success: true,
     };
   } catch (error) {
-    console.error('[onchain] DID 등록 실패:', error);
-    throw error;
+    console.error("[onchain] registerOrUpdateDID failed:", error.message);
+
+    // Return error details for debugging
+    return {
+      txHash: null,
+      success: false,
+      error: error.message,
+      code: error.code,
+    };
   }
 }
 
+/**
+ * Get DID info from chain
+ * @param {string} userCommit - bytes32 hex string
+ */
+export async function getDIDInfo(userCommit) {
+  ensureInitialized();
+
+  try {
+    const userCommitBytes32 = ethers.zeroPadValue(userCommit.startsWith("0x") ? userCommit : `0x${userCommit}`, 32);
+    const info = await didRegistry.didOf(userCommitBytes32);
+
+    return {
+      isAdult: info.isAdult,
+      gender: Number(info.gender),
+      countryCommit: info.countryCommit,
+      issuedAt: Number(info.issuedAt),
+      exists: Number(info.issuedAt) > 0,
+    };
+  } catch (error) {
+    console.error("[onchain] getDIDInfo failed:", error.message);
+    return null;
+  }
+}
+
+/**
+ * Get item price from ItemPayment contract
+ * @param {number} itemId
+ */
+export async function getItemPrice(itemId) {
+  ensureInitialized();
+
+  try {
+    const price = await itemPayment.itemPrice(itemId);
+    return {
+      priceWei: price.toString(),
+      priceEther: ethers.formatEther(price),
+    };
+  } catch (error) {
+    console.error("[onchain] getItemPrice failed:", error.message);
+    return null;
+  }
+}
+
+/**
+ * Check if issuer wallet is properly configured and has the issuer role
+ */
+export async function checkIssuerStatus() {
+  ensureInitialized();
+
+  try {
+    const contractIssuer = await didRegistry.issuer();
+    const isConfigured = !!wallet;
+    const isIssuer = wallet ? contractIssuer.toLowerCase() === wallet.address.toLowerCase() : false;
+
+    let balance = null;
+    if (wallet) {
+      const balanceWei = await provider.getBalance(wallet.address);
+      balance = ethers.formatEther(balanceWei);
+    }
+
+    return {
+      contractIssuer,
+      walletAddress: wallet?.address || null,
+      isConfigured,
+      isIssuer,
+      balance,
+    };
+  } catch (error) {
+    console.error("[onchain] checkIssuerStatus failed:", error.message);
+    return {
+      error: error.message,
+      isConfigured: !!wallet,
+      isIssuer: false,
+    };
+  }
+}
+
+// Initialize on module load
+try {
+  initializeProvider();
+} catch (error) {
+  console.error("[onchain] Initial setup failed:", error.message);
+}

@@ -1,9 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { ChevronLeft, Lock as LockIcon, Star as LucideStarIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useWallet } from "@/lib/hooks";
 import { getTokenBalance } from "@/lib/utils/wallet";
+import { memexApi } from "@/lib/api/memex-api";
+import { MEMECORE_NETWORK } from "@/lib/utils/wallet";
 import svgPaths from "@/lib/imports/svg-7r31iljoey";
 const imgGroup19821 = "/assets/memecore.png";
 const imgItem1 = "/assets/Item Icon.png";
@@ -31,11 +33,21 @@ interface CoinBalanceIconProps {
 function CoinBalanceIcon({ balance }: CoinBalanceIconProps) {
   // 잔액 포맷팅 (소수점 2자리까지)
   const formatBalance = (bal: string | null | undefined): string => {
-    if (!bal) return "0";
+    console.log('[CoinBalanceIcon] formatBalance 호출:', { balance: bal });
+    if (!bal) {
+      console.log('[CoinBalanceIcon] balance가 없음, 0 반환');
+      return "0";
+    }
     const num = parseFloat(bal);
-    if (isNaN(num)) return "0";
+    console.log('[CoinBalanceIcon] parseFloat 결과:', num);
+    if (isNaN(num)) {
+      console.log('[CoinBalanceIcon] NaN, 0 반환');
+      return "0";
+    }
     // 소수점이 있으면 2자리까지, 없으면 정수로 표시
-    return num % 1 === 0 ? num.toString() : num.toFixed(2);
+    const formatted = num % 1 === 0 ? num.toString() : num.toFixed(2);
+    console.log('[CoinBalanceIcon] 최종 포맷팅 결과:', formatted);
+    return formatted;
   };
 
   return (
@@ -242,44 +254,125 @@ export default function ItemStore({
   const [tokenBalance, setTokenBalance] = useState<string | null>(null);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 
-  // 토큰 컨트랙트 주소 (환경변수에서 가져오기, 추후 제공 예정)
-  const tokenContractAddress =
-    process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS || "";
+  // 토큰 컨트랙트 주소 (환경변수에서 가져오기, 기본값 설정)
+  const tokenContractAddress = useMemo(
+    () => process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS || "0x91B6Ff86A7f065343BcCdfFf3cDE193443C9F9f2",
+    []
+  );
 
-  // MemeX 연동 및 지갑 연결 시 토큰 잔액 조회
+  // 지갑 연결 시 토큰 잔액 조회 (체인 ID 43521에서 조회)
   useEffect(() => {
     const fetchTokenBalance = async () => {
-      // MemeX 연동되어 있고, 지갑이 연결되어 있으며, 토큰 컨트랙트 주소가 있을 때만 조회
-      if (
-        memeXConnected &&
-        walletConnected &&
-        isConnected &&
-        address &&
-        tokenContractAddress
-      ) {
+      console.log('토큰 잔액 조회 조건 확인:', {
+        isConnected,
+        address,
+        tokenContractAddress,
+        hasTokenAddress: !!tokenContractAddress,
+      });
+
+      // 메타마스크 연결 확인
+      if (typeof window === 'undefined' || !window.ethereum) {
+        console.warn('MetaMask가 설치되어 있지 않습니다.');
+        setTokenBalance(null);
+        return;
+      }
+
+      // 지갑이 연결되어 있을 때 조회
+      if (isConnected && address) {
         setIsLoadingBalance(true);
         try {
-          const balance = await getTokenBalance(tokenContractAddress, address);
-          setTokenBalance(balance);
-        } catch (error) {
-          console.error("토큰 잔액 조회 실패:", error);
+          // 네이티브 토큰(M) 잔액 조회 (M 450개는 네이티브 토큰)
+          console.log('네이티브 토큰(M) 잔액 조회 시작 (MetaMask를 통해):', { 
+            address,
+            isConnected,
+          });
+          
+          const { getNativeBalance } = await import('@/lib/utils/wallet');
+          const nativeBalance = await getNativeBalance(address);
+          const { ethers } = await import('ethers');
+          const formattedNative = ethers.formatEther(nativeBalance);
+          console.log('네이티브 토큰(M) 잔액 조회 성공:', {
+            raw: nativeBalance,
+            formatted: formattedNative,
+            type: typeof formattedNative,
+          });
+          setTokenBalance(formattedNative);
+          console.log('tokenBalance state 설정 완료:', formattedNative);
+        } catch (error: any) {
+          console.error('네이티브 토큰 잔액 조회 실패:', {
+            message: error?.message,
+            code: error?.code,
+            error,
+          });
           setTokenBalance(null);
         } finally {
           setIsLoadingBalance(false);
         }
       } else {
+        console.warn('토큰 잔액 조회 조건 불만족:', {
+          isConnected,
+          hasAddress: !!address,
+        });
         setTokenBalance(null);
       }
     };
 
     fetchTokenBalance();
-  }, [
-    memeXConnected,
-    walletConnected,
-    isConnected,
-    address,
-    tokenContractAddress,
-  ]);
+  }, [isConnected, address, tokenContractAddress]);
+
+  // 아이템별 원화 가격 정의 (KRW)
+  const itemKRWPrices: Record<string, number> = {
+    super_like: 9900,
+    rewind: 5500,
+    like_unlimited: 22000,
+    hide_onchain: 3300,
+  };
+
+  // 밈코어 가격 조회 및 TOKEN 개수 계산
+  const [memeCorePrice, setMemeCorePrice] = useState<number>(2013.4); // 초기값 설정
+  const [isLoadingPrice, setIsLoadingPrice] = useState(false);
+
+  // 밈코어 가격 조회
+  useEffect(() => {
+    const fetchMemeCorePrice = async () => {
+      setIsLoadingPrice(true);
+      try {
+        // MemeX API를 통해 밈코어 가격 조회
+        // 네이티브 토큰의 경우 특별한 주소가 필요할 수 있음
+        // 일단 기본값 사용, 나중에 실제 API 연동
+        // TODO: 밈코어 네이티브 토큰 가격 조회 API 연동
+        // const priceData = await memexApi.getLatestPrice(MEMECORE_NETWORK.chainId, '0x...');
+        // const usdPrice = parseFloat(priceData.usdPrice);
+        // const krwPrice = usdPrice * 1300; // USD to KRW 환율 (대략)
+        // setMemeCorePrice(krwPrice);
+        
+        // 밈코어 가격: 1 M = 2013.4원
+        setMemeCorePrice(2013.4);
+      } catch (error) {
+        console.error('밈코어 가격 조회 실패:', error);
+        setMemeCorePrice(2013.4); // 기본값: 1 M = 2013.4원
+      } finally {
+        setIsLoadingPrice(false);
+      }
+    };
+
+    fetchMemeCorePrice();
+  }, []);
+
+  // 아이템별 TOKEN 가격 계산 (원화 가격 / 밈코어 가격)
+  const getItemTokenPrice = useCallback((itemId: string): number => {
+    if (!itemId) return 0;
+    const krwPrice = itemKRWPrices[itemId] || 9900;
+    const price = memeCorePrice;
+    const tokenPrice = Math.ceil(krwPrice / price); // 올림 처리
+    console.log('[getItemTokenPrice] 계산:', {
+      itemId,
+      krwPrice,
+      memeCorePrice: price,
+      tokenPrice,
+    });
+    return tokenPrice;
+  }, [memeCorePrice]);
 
   // 구매하기 버튼 클릭 시 결제 방식 선택 모달 표시
   const handlePurchaseClick = (itemId: string, itemName: string) => {
@@ -314,48 +407,83 @@ export default function ItemStore({
     }
   };
 
-  // 토큰 결제 (MemeX Wallet)
+  // 토큰 결제 (MemeX Wallet) - 실제 블록체인 트랜잭션
   const handleTokenPayment = async () => {
     if (!selectedItem) return;
 
-    // MemeX 연동 확인
-    if (!memeXConnected) {
-      toast.error("MemeX 연동이 필요합니다. 프로필에서 MemeX를 연결해주세요.", {
-        description:
-          "프로필 설정에서 MemeX를 연동한 후 토큰 결제를 이용할 수 있습니다.",
-        duration: 4000,
-      });
-      setShowPaymentModal(false);
-      return;
-    }
-
     // 지갑 연결 확인
-    if (!walletConnected) {
-      toast.error("먼저 MemeX Wallet을 연결해주세요!");
+    if (!isConnected || !address) {
+      toast.error("먼저 지갑을 연결해주세요!");
       onConnectWallet();
       setShowPaymentModal(false);
       return;
     }
 
     try {
-      toast.loading("토큰 결제 처리 중...", { id: "payment" });
+      toast.loading("토큰 결제 처리 중... (MetaMask에서 확인하세요)", { id: "payment" });
 
-      // TODO: 실제 토큰 결제 로직 구현
-      // 현재는 모의 구현
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // ItemPayment 컨트랙트 주소 가져오기
+      const itemPaymentAddress =
+        process.env.NEXT_PUBLIC_ITEM_PAYMENT_ADDRESS || "0x91B6Ff86A7f065343BcCdfFf3cDE193443C9F9f2";
 
-      toast.success(`${selectedItem.name} 구매 완료! 🎉`, { id: "payment" });
+      // itemId를 숫자로 변환 (selectedItem.id는 문자열일 수 있음)
+      // 아이템 ID 매핑: super_like -> 1, rewind -> 2, 등등
+      const itemIdMap: Record<string, number> = {
+        super_like: 1,
+        rewind: 2,
+        like_unlimited: 3,
+        hide_onchain: 4,
+      };
+      const itemId = itemIdMap[selectedItem.id] || 1; // 기본값 1
+
+      // 아이템별 TOKEN 가격 계산 (원화 가격 / 밈코어 가격)
+      const itemPrice = getItemTokenPrice(selectedItem.id);
+
+      // 토큰 전송
+      const { purchaseItemWithToken } = await import('@/lib/utils/wallet');
+      const txHash = await purchaseItemWithToken(
+        itemPaymentAddress,
+        itemId,
+        itemPrice // 아이템별 가격
+      );
+
+      console.log('토큰 결제 트랜잭션 완료:', txHash);
+
+      toast.success(
+        `${selectedItem.name} 구매 완료! 🎉`,
+        {
+          id: "payment",
+          description: `트랜잭션: ${txHash.slice(0, 10)}...`,
+          duration: 5000,
+        }
+      );
+
+      // 잔액 다시 조회
+      if (isConnected && address) {
+        const { getNativeBalance } = await import('@/lib/utils/wallet');
+        const nativeBalance = await getNativeBalance(address);
+        const { ethers } = await import('ethers');
+        const formattedNative = ethers.formatEther(nativeBalance);
+        setTokenBalance(formattedNative);
+      }
 
       // 부모 컴포넌트에 구매 완료 알림
       onPurchase(selectedItem.id, 0);
 
       setShowPaymentModal(false);
       setSelectedItem(null);
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "구매 중 오류가 발생했습니다.",
-        { id: "payment" }
-      );
+    } catch (error: any) {
+      console.error('토큰 결제 실패:', error);
+      
+      // 사용자가 트랜잭션을 거부한 경우
+      if (error?.code === 4001 || error?.message?.includes('user rejected')) {
+        toast.error("트랜잭션이 취소되었습니다.", { id: "payment" });
+      } else {
+        toast.error(
+          error?.message || "구매 중 오류가 발생했습니다.",
+          { id: "payment" }
+        );
+      }
     }
   };
 
@@ -400,13 +528,25 @@ export default function ItemStore({
           <p className="font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] font-bold leading-[21.6px] not-italic relative shrink-0 text-[#212529] text-[18px] text-nowrap whitespace-pre">
             아이템 상점
           </p>
-          {memeXConnected && walletConnected ? (
-            <CoinBalanceIcon
-              balance={isLoadingBalance ? "..." : tokenBalance}
-            />
-          ) : (
-            <CoinBalanceIcon balance={null} />
-          )}
+          {(() => {
+            console.log('[ItemStore] 잔액 표시 조건 확인:', {
+              memeXConnected,
+              walletConnected,
+              isConnected,
+              address,
+              isLoadingBalance,
+              tokenBalance,
+            });
+            // 지갑이 연결되어 있으면 잔액 표시 (MemeX 연동 여부와 무관)
+            if (isConnected && address) {
+              return (
+                <CoinBalanceIcon
+                  balance={isLoadingBalance ? "..." : tokenBalance}
+                />
+              );
+            }
+            return <CoinBalanceIcon balance={null} />;
+          })()}
         </div>
       </div>
 
@@ -712,7 +852,12 @@ export default function ItemStore({
             >
               <div className="absolute bg-[#1976d2] box-border content-stretch flex gap-[15px] items-start left-1/2 p-[15px] rounded-[10px] top-1/2 translate-x-[-50%] translate-y-[-50%]">
                 <p className="font-['Roboto:Medium',sans-serif] font-medium leading-[normal] relative shrink-0 text-[20px] text-nowrap text-white whitespace-pre">
-                  90 TOKEN 결제
+                  {(() => {
+                    if (!selectedItem) return 'TOKEN 결제';
+                    if (isLoadingPrice) return '가격 조회 중...';
+                    const tokenPrice = getItemTokenPrice(selectedItem.id);
+                    return `${tokenPrice} TOKEN 결제`;
+                  })()}
                 </p>
               </div>
             </button>
